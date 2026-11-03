@@ -36,7 +36,7 @@ const href = (l) => (l.post ? base + l.post : l.href);
               <p class="org">{e.org}</p>
               <p class="txt">{e.text}</p>
             </div>
-            <div class="side">{e.links.map((l) => (l.href ? <a href={l.href} target="_blank" rel="noopener">{l.t} ↗</a> : <span>{l.t}</span>))}</div>
+            <div class="side">{e.links.map((l) => (l.post ? <a href={base + l.post}>{l.t} →</a> : <a href={l.href} target="_blank" rel="noopener">{l.t} ↗</a>))}</div>
           </li>
         ))}
       </ol>
@@ -54,7 +54,7 @@ const href = (l) => (l.post ? base + l.post : l.href);
               <p class="tags meta">{s.tags}</p>
               {s.img && <figure class="fig"><img src={base + s.img} alt={s.cap} loading="lazy" /><figcaption class="meta">{s.cap}</figcaption></figure>}
             </div>
-            <div class="side">{s.links.map((l) => <a href={href(l)} target={l.post ? undefined : '_blank'} rel="noopener">{l.t} ↗</a>)}</div>
+            <div class="side">{s.links.map((l) => <a href={href(l)} target={l.post ? undefined : '_blank'} rel="noopener">{l.t} {l.post ? '→' : '↗'}</a>)}</div>
           </li>
         ))}
       </ol>

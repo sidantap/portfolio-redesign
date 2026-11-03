@@ -1,12 +1,15 @@
 ---
-layout: ../../layouts/Post.astro
-title: Teaching GPT-2 about one university
+layout: ../../layouts/Project.astro
+title: An NKU chatbot on a fine-tuned GPT-2
 kind: Research
-date: '2024-08-15'
-minutes: 5
+org: NKU
+date: '2024-08'
+period: Feb – Aug 2024
 draft: true
 summary: We built 1,611 training samples from the NKU website and fine-tuned GPT-2 on them, so it could answer questions about Northern Kentucky University better than a general-purpose chatbot.
-tags: [llm, fine-tuning, nlp, research]
+impact: 10–15% better than ChatGPT on NKU-specific test questions
+tags: [llm, fine-tuning, nlp, python, research]
+links: []
 ---
 
 This was a research poster at the NKU School of Computing & Analytics, with Simran Shrestha, Pheo Ward and Dr. Junxiu Zhou.

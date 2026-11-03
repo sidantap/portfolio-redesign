@@ -20,23 +20,13 @@ export const links = [
   { k: 'resume', label: 'Résumé', value: 'One-page résumé', href: 'profile/#top' },
 ];
 
-// Home "work" list: year · title · where it lives
-export const work = [
-  { year: '2026', title: 'comply., a system of record for DOT drug and alcohol testing', where: 'complydot.org', href: 'https://www.complydot.org' },
-  { year: '2026', title: 'A data pipeline that runs every night for $0', where: 'live dashboard', href: 'https://sidantap.github.io/nightly-311-pipeline/' },
-  { year: '2026', title: 'Medallion lakehouse on Azure Databricks', where: 'NKWD' },
-  { year: '2025', title: 'FAA drug and alcohol testing randomizer in R Shiny', where: 'Atlas Air' },
-  { year: '2025', title: 'Reading how first-year nurses feel, with NLP', where: 'NKU research' },
-  { year: '2025', title: 'Cargo After COVID: two decades of U.S. air cargo', where: 'live app', href: 'https://sidantap.shinyapps.io/CargoAfterCOVID/' },
-  { year: '2024', title: 'An NKU chatbot on a fine-tuned GPT-2', where: 'research poster' },
-];
 
 export const experience = [
   {
     when: '02/2026–Current', role: 'Data Analytics Engineer',
     logo: { text: 'NKWD', label: 'Northern Kentucky Water District' }, org: 'Northern Kentucky Water District · Erlanger, KY',
     text: 'Medallion (bronze, silver, gold) pipelines on Azure Databricks with PySpark and Delta Lake, loading raw data incrementally and modeling gold facts and dimensions with SCD Type 1 and 2. Config-driven ingestion from SQL Server sources (CIS, Lucity, LIMS, Antero) and REST APIs (Paycor, KnowBe4, CivicPlus, ServiceDesk Plus), orchestrated with Azure Data Factory, ADLS Gen2 and Key Vault and shipped through Azure DevOps CI/CD with pytest, black and pylint. Built 10–20 Power BI reports for seven departments and migrated 40–50 Crystal Reports, saving 20–40 staff hours a week.',
-    links: [{ t: 'Power BI write-up (soon)' }],
+    links: [{ t: 'Lakehouse', post: 'projects/databricks-lakehouse/' }, { t: 'Power BI', post: 'projects/power-bi-modernization/' }],
   },
   {
     when: '05/2025–12/2025', role: 'Data Analysis and Process Solutions Intern',
@@ -74,17 +64,17 @@ export const selected = [
   {
     when: '2026–', title: 'comply.', tags: 'React · TypeScript · Vitest · three.js',
     text: 'A system of record for DOT drug and alcohol random testing. It syncs employees from the HR system, routes every pool change through approval, runs random selections anyone can re-run to prove they were fair, and tracks each test to its MRO result. Live for FAA (14 CFR Part 120); the other DOT agencies are next.',
-    img: 'img/comply.jpg', cap: 'complydot.org', links: [{ t: 'complydot.org', href: 'https://www.complydot.org' }],
+    img: 'img/comply.jpg', cap: 'complydot.org', links: [{ t: 'complydot.org', href: 'https://www.complydot.org' }, { t: 'project page', post: 'projects/comply/' }],
   },
   {
     when: '2026', title: 'A data pipeline that runs every night for $0', tags: 'Python · DuckDB · dbt · GitHub Actions',
     text: 'Cincinnati 311 requests, NOAA weather and NHTSA vehicle complaints, loaded incrementally, tested and modeled with dbt into a star schema every night. Bad rows go to quarantine with a reason; a small open-source model classifies new complaints and is scored against NHTSA’s own labels.',
-    img: 'img/nightly-overview.jpg', cap: 'Nightly 311 dashboard', links: [{ t: 'dashboard', href: 'https://sidantap.github.io/nightly-311-pipeline/' }, { t: 'code', href: 'https://github.com/sidantap/nightly-311-pipeline' }, { t: 'write-up', post: 'writing/nightly-311/' }],
+    img: 'img/nightly-overview.jpg', cap: 'Nightly 311 dashboard', links: [{ t: 'dashboard', href: 'https://sidantap.github.io/nightly-311-pipeline/' }, { t: 'code', href: 'https://github.com/sidantap/nightly-311-pipeline' }, { t: 'project page', post: 'projects/nightly-311/' }],
   },
   {
     when: '2024', title: 'An NKU chatbot on a fine-tuned GPT-2', tags: 'Python · GPT-2 (1.5B) · Jina · GPT-4o',
     text: '1,611 training samples built from the NKU website, formatted as instruction, input and output with GPT-4o and manual review, used to fine-tune GPT-2. It answered NKU questions 10–15% better than ChatGPT on our test set.',
-    links: [{ t: 'write-up', post: 'writing/nku-chatbot/' }],
+    links: [{ t: 'project page', post: 'projects/nku-chatbot/' }],
   },
   {
     when: '2025', title: 'First-year nurse sentiment', tags: 'Python · NLTK · scikit-learn · R Shiny',

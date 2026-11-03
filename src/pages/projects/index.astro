@@ -1,36 +1,41 @@
 ---
 import Base from '../../layouts/Base.astro';
-const posts = Object.values(import.meta.glob('./*.md', { eager: true }))
+const projects = Object.values(import.meta.glob('./*.md', { eager: true }))
   .map((p) => ({ ...p.frontmatter, url: p.url }))
   .sort((a, b) => (a.date < b.date ? 1 : -1));
 const tagCount = {};
-posts.forEach((p) => p.tags.forEach((t) => (tagCount[t] = (tagCount[t] || 0) + 1)));
-const tags = Object.keys(tagCount).sort();
-const years = [...new Set(posts.map((p) => p.date.slice(0, 4)))];
+projects.forEach((p) => p.tags.forEach((t) => (tagCount[t] = (tagCount[t] || 0) + 1)));
+// only tags shared by two or more projects, so the filter row stays short; search covers the rest
+const tags = Object.keys(tagCount).filter((t) => tagCount[t] > 1).sort((a, b) => tagCount[b] - tagCount[a] || a.localeCompare(b));
+const years = [...new Set(projects.map((p) => p.date.slice(0, 4)))];
 ---
-<Base title="Writing · Sidanta Parajuli" active="writing">
+<Base title="Projects · Sidanta Parajuli" active="projects">
   <main class="wrap" style="padding-top:56px">
     <div class="bar">
-      <label class="search"><span aria-hidden="true">/</span><input id="q" type="search" placeholder="search titles & tags" aria-label="Search titles and tags" /></label>
-      <span class="meta" id="count">{posts.length} / {posts.length}</span>
+      <label class="search"><span aria-hidden="true">/</span><input id="q" type="search" placeholder="search projects, tools & places" aria-label="Search projects and tags" /></label>
+      <span class="meta" id="count">{projects.length} / {projects.length}</span>
     </div>
     <div class="tagrow" id="tags">
-      <button type="button" class="tf on" data-t="">All {posts.length}</button>
+      <button type="button" class="tf on" data-t="">All {projects.length}</button>
       {tags.map((t) => <button type="button" class="tf" data-t={t}>{t} {tagCount[t]}</button>)}
     </div>
 
     {years.map((y) => {
-      const list = posts.filter((p) => p.date.startsWith(y));
+      const list = projects.filter((p) => p.date.startsWith(y));
       return (
-        <section class="yr" data-year={y}>
+        <section class="yr">
           <div class="yl"><span class="label">{y}</span><span class="meta yc">{list.length}</span></div>
           <ol class="pl">
             {list.map((p) => (
-              <li class="pi" data-s={(p.title + ' ' + p.tags.join(' ')).toLowerCase()} data-tags={p.tags.join('|')}>
+              <li class="pi" data-s={(p.title + ' ' + p.org + ' ' + p.kind + ' ' + p.tags.join(' ')).toLowerCase()} data-tags={p.tags.join('|')}>
                 <a href={p.url}>
-                  <h2>{p.title}</h2>
-                  <p>{p.summary}</p>
-                  <span class="meta">{p.date.slice(5)} &nbsp; {p.minutes} min &nbsp; {p.tags.join('  ')}{p.draft && <span class="dr">draft</span>}</span>
+                  <div class="txt">
+                    <span class="meta kind">{p.kind} · {p.org}</span>
+                    <h2>{p.title}</h2>
+                    <p>{p.summary}</p>
+                    <span class="meta">{p.period} &nbsp; {p.tags.join('  ')}{p.draft && <span class="dr">draft</span>}</span>
+                  </div>
+                  {p.img && <img src={import.meta.env.BASE_URL + p.img} alt="" loading="lazy" />}
                 </a>
               </li>
             ))}
@@ -49,17 +54,20 @@ const years = [...new Set(posts.map((p) => p.date.slice(0, 4)))];
   .tf { background: none; border: 0; border-bottom: 1px solid transparent; padding: 2px 0; font: 400 0.74rem var(--mono); color: var(--soft); cursor: pointer; }
   .tf:hover { color: var(--ink); }
   .tf.on { color: var(--accent); border-bottom-color: var(--accent); }
-  .yr { display: grid; grid-template-columns: 110px minmax(0, 640px); gap: 24px; border-top: 1px solid var(--line); padding-top: 22px; margin-bottom: 30px; }
+  .yr { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 24px; border-top: 1px solid var(--line); padding-top: 22px; margin-bottom: 30px; }
   .yl { display: grid; align-content: start; gap: 2px; }
   .pl { list-style: none; margin: 0; padding: 0; }
   .pi + .pi { border-top: 1px solid var(--line); }
-  .pi a { display: block; padding: 0 0 22px; text-decoration: none; }
-  .pi + .pi a { padding-top: 22px; }
-  .pi h2 { font-size: 1.32rem; line-height: 1.3; transition: color 0.2s; }
+  .pi a { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 28px; align-items: start; padding: 0 0 24px; text-decoration: none; }
+  .pi a:not(:has(img)) { grid-template-columns: minmax(0, 640px); }
+  .pi + .pi a { padding-top: 24px; }
+  .kind { text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); }
+  .pi h2 { font-size: 1.32rem; line-height: 1.3; margin-top: 6px; transition: color 0.2s; }
   .pi a:hover h2 { color: var(--accent); }
-  .pi p { margin: 8px 0 10px; color: var(--soft); font-size: 0.95rem; line-height: 1.6; }
+  .pi p { margin: 8px 0 10px; color: var(--soft); font-size: 0.95rem; line-height: 1.6; max-width: 62ch; }
+  .pi img { border: 1px solid var(--line); aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; width: 100%; }
   .dr { margin-left: 12px; color: var(--lily); text-transform: uppercase; letter-spacing: 0.14em; }
-  @media (max-width: 640px) { .yr { grid-template-columns: 1fr; gap: 10px; } }
+  @media (max-width: 760px) { .yr { grid-template-columns: 1fr; gap: 10px; } .pi a { grid-template-columns: 1fr; gap: 14px; } .pi img { max-width: 360px; } }
 </style>
 
 <script is:inline>

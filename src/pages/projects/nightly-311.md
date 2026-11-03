@@ -1,12 +1,18 @@
 ---
-layout: ../../layouts/Post.astro
+layout: ../../layouts/Project.astro
 title: A data pipeline that runs every night for $0
-kind: Case
-date: '2026-10-20'
-minutes: 7
+kind: Pipeline
+org: Personal
+date: '2026-10'
+period: Oct 2026 – now
 draft: true
 summary: Cincinnati 311 requests, NOAA weather and NHTSA vehicle complaints, loaded incrementally, tested with dbt and modeled into a star schema every night on GitHub Actions, with a small classifier scored against labels it has never seen.
-tags: [data engineering, dbt, duckdb, github actions, data quality]
+impact: 84.7% on a held-out test set, about 80% live, and runs finish in under a minute
+img: img/nightly-overview.jpg
+tags: [python, duckdb, dbt, github actions, data quality, machine learning]
+links:
+  - { t: Live dashboard, href: 'https://sidantap.github.io/nightly-311-pipeline/' }
+  - { t: Code and README, href: 'https://github.com/sidantap/nightly-311-pipeline' }
 ---
 
 At work most of my pipelines run on Azure Databricks against systems I can't show anyone. So I built one I can: a small pipeline that does the same jobs on public data, runs every night, and publishes what it did. It costs nothing to run.

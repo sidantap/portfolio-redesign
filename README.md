@@ -2,11 +2,11 @@
 
 A mockup of Sidanta Parajuli's personal website, restructured after
 [terryli710.github.io](https://terryli710.github.io/): a full-screen hero, then calm hairline
-lists; a Writing index with search and tags; long-form case studies with a sticky Contents list;
+lists; a Projects index with search and tags; a page per project with a sticky Contents list;
 a Design gallery; and a Profile page that is the whole résumé.
 
-- **Home:** the red spider lily in particles, then links, work, notes and design.
-- **Writing:** `src/pages/writing/*.md`. Add a Markdown file to add a post.
+- **Home:** the red spider lily in particles, then links, projects, experience and design.
+- **Projects:** `src/pages/projects/*.md`, one Markdown file per project. Add a file to add a project.
 - **Design:** placeholders in `src/data/site.js` until the real pieces arrive.
 - **Profile:** experience, selected work, education and skills, all from `src/data/site.js`.
 
