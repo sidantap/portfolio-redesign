@@ -7,21 +7,26 @@ date: '2024-11'
 period: Aug – Dec 2024
 summary: An interactive R Shiny map of where clinical studies run worldwide, combining several sources into one view for research and proposal work.
 impact: Replaced repeated manual assembly of study experience
-img: fig/clinical-map.svg
-tags: [geospatial visualization, data integration, data validation, snowflake, sql, medidata, python, r shiny]
+img: fig/clinical-world.svg
+tags: [geospatial visualization, data integration, data validation, clinical trial data, snowflake, dbt, sql, medidata, python, r, r shiny]
 links: []
 ---
 
-## The problem
+<figure><img src="../../fig/clinical-world.svg" alt="World map with circles sized by number of studies per country, largest in the United States and Europe" /><figcaption>Fig. 1 · What the map shows (illustrative sites and counts, not Medpace data)</figcaption></figure>
 
-When a clinical research organization bids on a new trial, the proposal has to show where it has run similar studies before. That experience was spread across several sources and pulled together by hand for each request.
+When a clinical research organization bids on a new trial, the proposal has to show where it has run similar studies before. That experience was spread across several sources and pulled together by hand for every request.
 
-<figure><img src="../../fig/clinical-map.svg" alt="Flow: Medidata and other study sources are integrated with SQL and Snowflake, cleaned and validated, and shown in an R Shiny map used by research and proposal teams" /><figcaption>Fig. 1 · Several sources, one map</figcaption></figure>
+## Before and after
 
-## What I built
+| | Before | After |
+|---|---|---|
+| **Where the answer lived** | Several separate sources | One map |
+| **How it was assembled** | By hand, again for each proposal | Once, in the data layer |
 
-An interactive R Shiny map of where clinical studies run around the world. It combines the sources into one standardized view, so the research and proposal teams can answer "where have we done this before?" without assembling it again by hand.
+## What made it work
 
-## The data work behind it
+The hard part wasn't the map, it was getting several sources into one consistent view. The data behind it came from Medidata and other clinical systems, with the transformation work in SQL on Snowflake and cleaning and validation in Python, SQL and R.
 
-The map sits on the same foundation as the rest of my Medpace work: dbt and SQL transformations on Snowflake, data pulled from Medidata, and millions of clinical trial records cleaned and validated with Python, SQL and R. I also built Power BI dashboards on Snowflake and led monthly dashboard design sessions for 10+ analysts in the US and UK.
+## The rest of the role
+
+The map sat on the same foundation as the rest of my Medpace work: dbt and SQL transformations on Snowflake, millions of clinical trial records cleaned and validated, Power BI dashboards for analysts and leadership, and monthly dashboard design sessions I led for 10+ analysts in the US and UK.

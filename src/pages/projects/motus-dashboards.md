@@ -5,27 +5,31 @@ kind: Business analytics
 org: Motus Freight
 date: '2024-06'
 period: Jan – Aug 2024
-summary: Tableau Cloud dashboards on data from Turvo, the company's transportation platform, including a CO2 dashboard with forecasting and a regional view across 4 regions and 49 states.
+summary: "Tableau Cloud dashboards on data from Turvo, the company's transportation platform, for two questions every freight broker has: where do our emissions come from, and where do we actually make money?"
 impact: Contributed to 12.4% lower emissions and 15% higher profitability
-img: fig/motus-flow.svg
-tags: [kpi design, forecasting, trend analysis, profitability analysis, emissions analytics, tableau cloud]
+img: fig/motus-tree.svg
+tags: [kpi design, kpi trees, profitability analysis, unit economics, forecasting, trend analysis, emissions analytics, sustainability reporting, data visualization, tableau cloud, turvo]
 links: []
 ---
 
-## Two questions
+A freight brokerage moves loads through many carriers across the country. I built the dashboards that answer two questions.
 
-A freight brokerage moves loads through many carriers across the country. Two questions mattered: where emissions come from and how to bring them down, and which regions, customers and carriers actually make money.
+## Question 1: where do we make money?
 
-<figure><img src="../../fig/motus-flow.svg" alt="Flow: Turvo data feeds KPIs and a trend forecast, which drive CO2, regional profit and customer scorecard dashboards in Tableau Cloud, contributing to 12.4 percent lower emissions and 15 percent higher profitability" /><figcaption>Fig. 1 · From freight data to two decisions</figcaption></figure>
+"Profitable" is too vague to act on, so the first step was breaking it down into numbers someone can move.
 
-## Emissions
+<figure><img src="../../fig/motus-tree.svg" alt="KPI tree: gross profit splits into revenue, margin and carrier cost, which feed views by customer, by region, by carrier and a revenue forecast" /><figcaption>Fig. 1 · The KPI tree behind the profitability views</figcaption></figure>
 
-A Tableau Cloud CO2 dashboard built on carrier and transportation data from Turvo, with trend analysis and forecasting so the team could see where emissions were heading, not just where they had been. It contributed to a **12.4% overall drop in emissions**.
+Each leaf became a view:
 
-## Profitability
+- **By customer:** profitability scorecards built from P&L data.
+- **By region:** a dashboard comparing gross profit across **4 regions and 49 states**.
+- **By carrier:** revenue forecasting for top and lower-ranked carriers.
 
-- **Customer profitability scorecards** built from P&L data.
-- **Revenue forecasting** for top and lower-ranked carriers.
-- **A regional dashboard** comparing gross profit across 4 regions and 49 states.
+The regional dashboard contributed to a **15% rise in overall profitability**.
 
-Together they contributed to a **15% rise in overall profitability**.
+## Question 2: where are emissions heading?
+
+<figure><img src="../../fig/motus-forecast.svg" alt="Line chart of an emissions index with history in black and a dashed forecast with a widening range" /><figcaption>Fig. 2 · The shape of the trend and forecast view (illustrative values)</figcaption></figure>
+
+A Tableau Cloud CO2 dashboard built on carrier and transportation data from Turvo, with trend analysis and forecasting, so the team could see where emissions were heading, not just where they'd been. It contributed to a **12.4% overall drop in emissions**.

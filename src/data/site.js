@@ -25,7 +25,7 @@ export const experience = [
     when: '02/2026–Current', role: 'Data Analytics Engineer',
     logo: { text: 'NKWD', label: 'Northern Kentucky Water District' }, org: 'Northern Kentucky Water District · Erlanger, KY',
     text: 'Medallion (bronze, silver, gold) pipelines on Azure Databricks with PySpark and Delta Lake, loading raw data incrementally and modeling gold facts and dimensions with SCD Type 1 and 2. Config-driven ingestion from SQL Server sources (CIS, Lucity, LIMS, Antero) and REST APIs (Paycor, KnowBe4, CivicPlus, ServiceDesk Plus), orchestrated with Azure Data Factory, ADLS Gen2 and Key Vault and shipped through Azure DevOps CI/CD with pytest, black and pylint. Built 10–20 Power BI reports for seven departments and migrated 40–50 Crystal Reports, saving 20–40 staff hours a week.',
-    links: [{ t: 'Lakehouse', post: 'projects/databricks-lakehouse/' }, { t: 'Power BI', post: 'projects/power-bi-modernization/' }],
+    links: [{ t: 'Lakehouse', post: 'projects/databricks-lakehouse/' }],
   },
   {
     when: '05/2025–12/2025', role: 'Data Analysis and Process Solutions Intern',
@@ -42,8 +42,8 @@ export const experience = [
   {
     when: 'Fall 2025', role: 'Innovation Fellow',
     logo: { src: 'logos/kcv.png', ar: 2.98, label: 'Kentucky Commercialization Ventures' }, org: 'Kentucky Commercialization Ventures',
-    text: 'One of ten fellows in the Fall 2025 cohort. Customer discovery, SWOT, failure-mode assessment and a commercialization plan for VIDVO.',
-    links: [{ t: 'KCV announcement', href: 'https://www.kycommercializationventures.com/post/ten-graduate-from-fall-2025-innovation-fellowship-cohort' }],
+    text: 'One of ten fellows in the Fall 2025 cohort. With Team #2, took Vidvo, an AI short-form video tool for small businesses, from concept to a commercialization plan: customer discovery, SWOT, lean canvas, failure-mode analysis and a go-to-market plan.',
+    links: [{ t: 'Vidvo', post: 'projects/vidvo/' }, { t: 'KCV announcement', href: 'https://www.kycommercializationventures.com/post/ten-graduate-from-fall-2025-innovation-fellowship-cohort' }],
   },
   {
     when: '08/2024–12/2024', role: 'Data Science Intern',
