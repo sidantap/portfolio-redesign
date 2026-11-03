@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-const { title, description = 'Sidanta Parajuli, data analytics engineer.', active = '', overHero = false } = Astro.props;
+const { title, description = 'Sidanta Parajuli, data analytics engineer.', active = '', overHero = false, theme = 'lily' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const u = (p) => base + p;
 const nav = [
@@ -11,7 +11,7 @@ const nav = [
 ];
 ---
 <!doctype html>
-<html lang="en" data-mode="night">
+<html lang="en" data-mode="night" data-theme={theme}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />

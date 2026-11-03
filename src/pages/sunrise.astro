@@ -1,0 +1,11 @@
+---
+// Landing-page option: Sunrise. Same page as the home page, with this photograph as the hero
+// and the color theme taken from it.
+import Base from '../layouts/Base.astro';
+import PhotoHero from '../components/PhotoHero.astro';
+import HomeSections from '../components/HomeSections.astro';
+---
+<Base title="Sidanta Parajuli" active="home" overHero={true} theme="sunrise">
+  <PhotoHero name="sunrise" alt="Snow peaks of the Himalaya under an orange sunrise sky, with misty ridges below" focus="40% 62%" />
+  <HomeSections />
+</Base>
