@@ -1,0 +1,14 @@
+---
+// An organization's logo drawn in the page's ink color, so it sits quietly in night and day.
+// The file is used as a mask: only its shape shows, never its original colors.
+const { l } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const h = 26;
+---
+{l.src
+  ? <span class="logo" role="img" aria-label={l.label} style={`width:${Math.min(130, Math.round(h * l.ar))}px;aspect-ratio:${l.ar};--src:url(${base + l.src})`}></span>
+  : <span class="logo-t" aria-label={l.label}>{l.text}</span>}
+<style>
+  .logo { display: block; background: var(--ink); opacity: 0.78; -webkit-mask: var(--src) no-repeat left center / contain; mask: var(--src) no-repeat left center / contain; }
+  .logo-t { font: 400 1.25rem/1 var(--serif); letter-spacing: 0.06em; color: var(--ink); opacity: 0.78; }
+</style>

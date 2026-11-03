@@ -33,32 +33,38 @@ export const work = [
 
 export const experience = [
   {
-    when: '02/2026–Current', role: 'Data Analytics Engineer', org: 'Northern Kentucky Water District · Erlanger, KY',
+    when: '02/2026–Current', role: 'Data Analytics Engineer',
+    logo: { text: 'NKWD', label: 'Northern Kentucky Water District' }, org: 'Northern Kentucky Water District · Erlanger, KY',
     text: 'Medallion (bronze, silver, gold) pipelines on Azure Databricks with PySpark and Delta Lake, loading raw data incrementally and modeling gold facts and dimensions with SCD Type 1 and 2. Config-driven ingestion from SQL Server sources (CIS, Lucity, LIMS, Antero) and REST APIs (Paycor, KnowBe4, CivicPlus, ServiceDesk Plus), orchestrated with Azure Data Factory, ADLS Gen2 and Key Vault and shipped through Azure DevOps CI/CD with pytest, black and pylint. Built 10–20 Power BI reports for seven departments and migrated 40–50 Crystal Reports, saving 20–40 staff hours a week.',
     links: [{ t: 'Power BI write-up (soon)' }],
   },
   {
-    when: '05/2025–12/2025', role: 'Data Analysis and Process Solutions Intern', org: 'Atlas Air Worldwide · Erlanger, KY',
+    when: '05/2025–12/2025', role: 'Data Analysis and Process Solutions Intern',
+    logo: { src: 'logos/atlas.svg', ar: 5.85, label: 'Atlas Air' }, org: 'Atlas Air Worldwide · Erlanger, KY',
     text: 'Built the FAA drug and alcohol testing app in R Shiny: eligibility filtering, randomized selection, rollover, deduplication and SharePoint audit logging through Microsoft Graph. Power Automate flows for the pilot Master Training Schedule, crew scheduling and immigration reporting, part of about 25–30 staff hours saved a week. Logged usage across three internal tools into Power BI.',
     links: [],
   },
   {
-    when: 'Fall 2025', role: 'Teaching Assistant and Research Assistant', org: 'NKU College of Informatics',
+    when: 'Fall 2025', role: 'Teaching Assistant and Research Assistant',
+    logo: { src: 'logos/nku.svg', ar: 4.11, label: 'Northern Kentucky University' }, org: 'NKU College of Informatics',
     text: 'TA for web development (INF 286): grading, an exam review quiz and office hours. Web scraping, machine learning and NLP in faculty research with Dr. Junxiu Zhou.',
     links: [],
   },
   {
-    when: 'Fall 2025', role: 'Innovation Fellow', org: 'Kentucky Commercialization Ventures',
+    when: 'Fall 2025', role: 'Innovation Fellow',
+    logo: { src: 'logos/kcv.png', ar: 2.98, label: 'Kentucky Commercialization Ventures' }, org: 'Kentucky Commercialization Ventures',
     text: 'One of ten fellows in the Fall 2025 cohort. Customer discovery, SWOT, failure-mode assessment and a commercialization plan for VIDVO.',
     links: [{ t: 'KCV announcement', href: 'https://www.kycommercializationventures.com/post/ten-graduate-from-fall-2025-innovation-fellowship-cohort' }],
   },
   {
-    when: '08/2024–12/2024', role: 'Data Science Intern', org: 'Medpace · Cincinnati, OH',
+    when: '08/2024–12/2024', role: 'Data Science Intern',
+    logo: { src: 'logos/medpace.svg', ar: 6.95, label: 'Medpace' }, org: 'Medpace · Cincinnati, OH',
     text: 'dbt and SQL transformations on Snowflake, and cleaning and validating millions of clinical trial records with Python, SQL and R. An R Shiny map of global clinical studies for proposals, and monthly dashboard design sessions for 10+ analysts in the US and UK.',
     links: [],
   },
   {
-    when: '01/2024–08/2024', role: 'Data Analytics Intern', org: 'Motus Freight · Bellevue, KY',
+    when: '01/2024–08/2024', role: 'Data Analytics Intern',
+    logo: { src: 'logos/motus.png', ar: 3.75, label: 'Motus Freight' }, org: 'Motus Freight · Bellevue, KY',
     text: 'Tableau Cloud dashboards on Turvo data, including a CO2 dashboard that contributed to a 12.4% drop in emissions and a regional dashboard across 4 regions and 49 states that contributed to a 15% rise in profit.',
     links: [],
   },
