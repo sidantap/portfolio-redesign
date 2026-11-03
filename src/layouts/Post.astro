@@ -1,0 +1,64 @@
+---
+// A long-form note: kind · year, title, summary, meta row, the body, and a sticky Contents list
+// on the right that marks the section you're reading.
+import Base from './Base.astro';
+const { frontmatter: f, headings = [] } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2);
+---
+<Base title={f.title + ' · Sidanta Parajuli'} description={f.summary} active="writing">
+  <main class="wrap post">
+    <article>
+      <header class="ph">
+        <p class="label kind">{f.kind} · {f.date.slice(0, 4)}{f.draft && <span class="draft">Draft</span>}</p>
+        <h1>{f.title}</h1>
+        <p class="sum">{f.summary}</p>
+        <div class="pm meta"><span>{f.date} &nbsp; {f.minutes} min</span><span class="tg">{f.tags.map((t) => <span>#{t.replace(/ /g, '-')}</span>)}</span></div>
+      </header>
+      <div class="body"><slot /></div>
+    </article>
+    {toc.length > 0 && (
+      <aside class="toc" aria-label="Contents">
+        <p class="meta" style="text-transform:uppercase;letter-spacing:.18em">Contents</p>
+        <ol>{toc.map((h) => <li><a href={'#' + h.slug}>{h.text}</a></li>)}</ol>
+      </aside>
+    )}
+  </main>
+</Base>
+
+<style>
+  .post { display: grid; grid-template-columns: minmax(0, 660px) 200px; gap: 70px; justify-content: space-between; padding-top: 64px; }
+  .kind { font-size: 0.9rem; letter-spacing: 0.24em; display: flex; align-items: center; gap: 14px; }
+  .draft { font: 400 0.6rem var(--mono); letter-spacing: 0.14em; color: var(--lily); border: 1px solid var(--lily); padding: 2px 7px; }
+  .ph h1 { font-size: clamp(2rem, 4.4vw, 2.9rem); line-height: 1.12; margin: 14px 0 22px; }
+  .sum { color: var(--soft); max-width: 46ch; font-family: var(--serif); font-weight: 300; font-size: 1.1rem; line-height: 1.6; margin: 0 0 22px; }
+  .pm { display: flex; justify-content: space-between; gap: 8px 20px; flex-wrap: wrap; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  .tg { display: flex; gap: 14px; flex-wrap: wrap; text-transform: uppercase; }
+  .body :global(h2) { font-size: 1.45rem; margin: 46px 0 14px; scroll-margin-top: 24px; }
+  .body :global(p), .body :global(li) { color: color-mix(in srgb, var(--ink) 88%, var(--soft)); }
+  .body :global(strong) { color: var(--ink); font-weight: 500; }
+  .body :global(a) { color: var(--accent); text-underline-offset: 3px; }
+  .body :global(figure) { margin: 30px 0; }
+  .body :global(figure img) { border: 1px solid var(--line); }
+  .body :global(figcaption) { font: 400 0.7rem/1.6 var(--mono); letter-spacing: 0.08em; color: var(--faint); margin-top: 10px; text-transform: uppercase; }
+  .body :global(code) { font: 400 0.85em var(--mono); background: var(--paper); padding: 1px 5px; }
+  .body :global(blockquote) { margin: 24px 0; padding-left: 16px; border-left: 2px solid var(--accent); font-family: var(--serif); font-style: italic; font-weight: 300; }
+  .toc { position: sticky; top: 30px; align-self: start; padding-top: 6px; }
+  .toc ol { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+  .toc a { display: grid; grid-template-columns: 18px 1fr; gap: 10px; font: 400 0.72rem/1.45 var(--mono); color: var(--faint); text-decoration: none; transition: color 0.2s; }
+  .toc a::before { content: ''; height: 1px; background: currentColor; margin-top: 0.7em; transition: width 0.2s; width: 12px; }
+  .toc a.on { color: var(--accent); }
+  .toc a.on::before { width: 18px; }
+  @media (max-width: 900px) { .post { grid-template-columns: minmax(0, 1fr); } .toc { display: none; } }
+</style>
+
+<script is:inline>
+(function () {
+  var links = [].slice.call(document.querySelectorAll('.toc a')); if (!links.length) return;
+  var heads = links.map(function (a) { return document.getElementById(decodeURIComponent(a.hash.slice(1))); });
+  function update() {
+    var cur = 0; heads.forEach(function (h, i) { if (h && h.getBoundingClientRect().top < innerHeight * 0.3) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+  }
+  addEventListener('scroll', update, { passive: true }); update();
+})();
+</script>

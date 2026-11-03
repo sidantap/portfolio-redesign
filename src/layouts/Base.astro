@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+const { title, description = 'Sidanta Parajuli, data analytics engineer.', active = '', overHero = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const u = (p) => base + p;
+const nav = [
+  { k: 'home', t: 'Home', href: u('') },
+  { k: 'writing', t: 'Writing', href: u('writing/') },
+  { k: 'design', t: 'Design', href: u('design/') },
+  { k: 'profile', t: 'Profile', href: u('profile/') },
+];
+---
+<!doctype html>
+<html lang="en" data-mode="night">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23c4554a'/%3E%3Ctext x='16' y='21' font-family='monospace' font-size='12' fill='%23f6f3ee' text-anchor='middle'%3ESP%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Instrument+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <script is:inline>
+    try {
+      var m = localStorage.getItem('sp-mode') || (matchMedia('(prefers-color-scheme: light)').matches ? 'day' : 'night');
+      document.documentElement.setAttribute('data-mode', m);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class={'top' + (overHero ? ' over' : '')}>
+    <div class="wrap">
+      <a class="who" href={u('')}><b>Sidanta Parajuli</b><span>Data analytics engineer</span></a>
+      <nav class="nav" aria-label="Pages">
+        {nav.map((n) => <a href={n.href} aria-current={active === n.k ? 'page' : undefined}>{n.t}</a>)}
+        <button class="mode" id="mode" type="button" aria-label="Switch between night and day"><span id="modeLabel">Day</span></button>
+      </nav>
+    </div>
+  </header>
+  <slot />
+  <footer class="foot">
+    <div class="wrap">
+      <span class="seal" aria-hidden="true">SP</span>
+      <span class="meta">Sidanta Parajuli · 2026 · built with Astro on GitHub Pages</span>
+    </div>
+  </footer>
+  <script is:inline>
+    (function () {
+      var root = document.documentElement, label = document.getElementById('modeLabel');
+      function sync() { label.textContent = root.getAttribute('data-mode') === 'day' ? 'Night' : 'Day'; }
+      sync();
+      document.getElementById('mode').addEventListener('click', function () {
+        var next = root.getAttribute('data-mode') === 'day' ? 'night' : 'day';
+        root.setAttribute('data-mode', next);
+        try { localStorage.setItem('sp-mode', next); } catch (e) {}
+        sync();
+        document.dispatchEvent(new CustomEvent('sp-mode'));
+      });
+    })();
+  </script>
+</body>
+</html>

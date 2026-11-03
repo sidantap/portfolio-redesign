@@ -1,0 +1,67 @@
+---
+// One piece at a time, the next one peeking in at the edge, with ← 01 / 08 → controls.
+// Placeholder frames until the real digital design work arrives.
+import Base from '../layouts/Base.astro';
+import { design } from '../data/site.js';
+---
+<Base title="Digital design · Sidanta Parajuli" active="design">
+  <main>
+    <div class="wrap dh" style="max-width:none">
+      <span class="label">Digital design</span>
+      <span class="meta right">{design.length} pieces<br />Minor in Digital Design · NKU</span>
+    </div>
+    <div class="stage" id="stage" tabindex="0" aria-label="Design pieces, use the arrow keys">
+      <div class="track" id="track">
+        {design.map((d) => (
+          <figure class="slide">
+            <div class="frame"><span><b>{d.n}</b>Your design piece goes here</span></div>
+          </figure>
+        ))}
+      </div>
+    </div>
+    <div class="wrap ctl" style="max-width:none">
+      <span class="meta"><span class="accent" id="cn">01</span> &nbsp; <span id="ct">{design[0].title}</span> &nbsp; <span id="cm">{design[0].meta}</span></span>
+      <span class="meta nav2"><button id="prev" aria-label="Previous">←</button><span id="pos">01 / {String(design.length).padStart(2, '0')}</span><button id="next" aria-label="Next">→</button></span>
+    </div>
+  </main>
+  <script type="application/json" id="dd" set:html={JSON.stringify(design)} />
+</Base>
+
+<style>
+  .dh { display: flex; justify-content: space-between; align-items: start; padding-top: 34px; padding-left: clamp(20px, 5vw, 72px); padding-right: clamp(20px, 5vw, 72px); }
+  .right { text-align: right; text-transform: uppercase; letter-spacing: 0.16em; }
+  .stage { overflow: hidden; margin-top: 40px; outline: none; }
+  .track { display: flex; gap: 6vw; padding-left: 21vw; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .slide { flex: 0 0 58vw; margin: 0; transition: opacity 0.4s, transform 0.6s; }
+  .slide:not(.on) { opacity: 0.35; transform: scale(0.88); }
+  .frame { aspect-ratio: 16 / 9; border: 1px dashed var(--line2); background: color-mix(in srgb, var(--lily) 6%, transparent); display: grid; place-items: center; text-align: center; font: 400 0.7rem/1.7 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+  .frame b { display: block; font: 300 3rem var(--serif); color: var(--lily); letter-spacing: 0; }
+  .ctl { display: flex; justify-content: space-between; gap: 16px; padding-top: 30px; padding-left: clamp(20px, 5vw, 72px); padding-right: clamp(20px, 5vw, 72px); text-transform: uppercase; letter-spacing: 0.16em; }
+  .accent { color: var(--accent); }
+  .nav2 { display: flex; gap: 18px; align-items: center; }
+  .nav2 button { background: none; border: 0; color: var(--soft); font: inherit; cursor: pointer; padding: 4px; }
+  .nav2 button:hover { color: var(--accent); }
+  @media (max-width: 640px) { .track { padding-left: 8vw; gap: 4vw; } .slide { flex-basis: 84vw; } }
+</style>
+
+<script is:inline>
+(function () {
+  var data = JSON.parse(document.getElementById('dd').textContent), i = 0, n = data.length;
+  var track = document.getElementById('track'), slides = track.children;
+  function pad(x) { return String(x).padStart(2, '0'); }
+  function go(k) {
+    i = (k + n) % n;
+    var w = slides[0].getBoundingClientRect().width, gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    track.style.transform = 'translateX(' + -(i * (w + gap)) + 'px)';
+    [].forEach.call(slides, function (s, j) { s.classList.toggle('on', j === i); });
+    document.getElementById('cn').textContent = data[i].n; document.getElementById('ct').textContent = data[i].title;
+    document.getElementById('cm').textContent = data[i].meta; document.getElementById('pos').textContent = pad(i + 1) + ' / ' + pad(n);
+  }
+  document.getElementById('prev').onclick = function () { go(i - 1); };
+  document.getElementById('next').onclick = function () { go(i + 1); };
+  [].forEach.call(slides, function (s, j) { s.addEventListener('click', function () { go(j); }); });
+  addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') go(i + 1); if (e.key === 'ArrowLeft') go(i - 1); });
+  addEventListener('resize', function () { go(i); });
+  go(0);
+})();
+</script>

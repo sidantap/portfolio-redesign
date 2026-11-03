@@ -1,0 +1,91 @@
+/* Sidanta Parajuli · personal website (mockup)
+   Structure after terryli710.github.io: a calm page of hairline lists, serif titles and
+   small spaced-out mono labels. Colors and type are the existing portfolio's: warm paper
+   and ink, one blue accent, the lily red used only for the lily and the seal. */
+:root,
+:root[data-mode='night'] {
+  color-scheme: dark;
+  --bg: #1c1915; --paper: #24201b; --ink: #eee9df; --soft: #b2aa9c; --faint: #857d70;
+  --line: rgba(238, 233, 223, 0.12); --line2: rgba(238, 233, 223, 0.22);
+  --accent: #86bfdc; --lily: #c4554a; --onaccent: #1c1915;
+}
+:root[data-mode='day'] {
+  color-scheme: light;
+  --bg: #eeebe4; --paper: #f6f3ee; --ink: #1d1a16; --soft: #565046; --faint: #7d7568;
+  --line: rgba(29, 26, 22, 0.13); --line2: rgba(29, 26, 22, 0.24);
+  --accent: #1f6a8e; --lily: #9e2f27; --onaccent: #f6f3ee;
+}
+:root {
+  --serif: 'Fraunces', Georgia, serif;
+  --sans: 'Instrument Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --wrap: 1040px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.75 var(--sans); -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
+h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; letter-spacing: -0.01em; }
+
+/* small spaced-out mono labels, used for every section heading and date */
+.label { font: 400 0.7rem/1.4 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+.meta { font: 400 0.7rem/1.5 var(--mono); letter-spacing: 0.08em; color: var(--faint); }
+.more { font: 400 0.68rem var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--soft); text-decoration: none; }
+.more:hover { color: var(--accent); }
+
+/* header */
+.top { position: relative; z-index: 10; border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap; min-height: 74px; padding-top: 14px; padding-bottom: 14px; max-width: none; }
+.top.over { position: absolute; inset: 0 0 auto; border-bottom: 0; color: #eee9df; }
+.who { text-decoration: none; display: grid; gap: 2px; }
+.who b { font: 500 0.82rem var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
+.who span { font: 400 0.62rem var(--mono); letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+.nav { display: flex; align-items: center; gap: clamp(14px, 2.4vw, 30px); flex-wrap: wrap; }
+.nav a, .mode { font: 400 0.74rem var(--mono); letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: inherit; opacity: 0.75; padding: 4px 0; border-bottom: 1px solid transparent; }
+.nav a:hover { opacity: 1; }
+.nav a[aria-current='page'] { opacity: 1; color: var(--accent); border-bottom-color: var(--accent); }
+.top.over .nav a[aria-current='page'] { color: #eee9df; border-bottom-color: #eee9df; }
+.mode { background: none; border: 0; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.mode:hover { opacity: 1; }
+
+/* hairline lists */
+.sec { padding: clamp(56px, 8vw, 96px) 0 0; }
+.sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 14px; }
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.rows > li { border-bottom: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 6px 24px; align-items: baseline; padding: 15px 0; text-decoration: none; }
+.row .t { font: 300 1.08rem/1.45 var(--serif); }
+.row .r { font: 400 0.66rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); text-align: right; }
+a.row:hover .t { color: var(--accent); }
+.row .arr { font-family: var(--mono); font-size: 0.75rem; color: var(--faint); margin-left: 6px; }
+.links .row { grid-template-columns: 26px 120px minmax(0, 1fr) auto; }
+.links .ic { color: var(--accent); font: 400 0.8rem var(--mono); }
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; gap: 2px; }
+  .row .r { text-align: left; }
+  .links .row { grid-template-columns: 22px 92px minmax(0, 1fr); }
+  .links .row .arr { display: none; }
+}
+
+/* design strip and tiles */
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tile { aspect-ratio: 4 / 3; border: 1px dashed var(--line2); display: grid; place-items: center; text-align: center; color: var(--faint); font: 400 0.66rem/1.6 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; background: color-mix(in srgb, var(--lily) 5%, transparent); }
+.tile b { display: block; font: 300 1.6rem var(--serif); letter-spacing: 0; color: var(--lily); text-transform: none; }
+
+/* footer with the seal */
+.foot { margin-top: clamp(80px, 10vw, 120px); padding: 28px 0 40px; border-top: 1px solid var(--line); }
+.foot .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.seal { width: 30px; height: 30px; display: grid; place-items: center; background: var(--lily); color: #f6f3ee; font: 500 0.66rem/1 var(--mono); letter-spacing: 0.04em; }
+
+/* chips and tags */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 400 0.68rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 7px 11px; border: 1px solid var(--line2); text-decoration: none; color: var(--soft); }
+.chip:hover { color: var(--ink); border-color: var(--accent); }
+.chip.primary { background: var(--accent); border-color: var(--accent); color: var(--onaccent); }
+.tag { font: 400 0.68rem var(--mono); color: var(--soft); padding: 3px 8px; border: 1px solid var(--line2); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
