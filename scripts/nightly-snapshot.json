@@ -1,0 +1,1045 @@
+{
+ "generated_at": "2026-11-03 08:28 UTC",
+ "runs": [
+  {
+   "run_id": "nightly_2026-11-03_e83816",
+   "started": "2026-11-03 08:28",
+   "status": "succeeded",
+   "seconds": 25.0
+  },
+  {
+   "run_id": "nightly_2026-11-02_55135d",
+   "started": "2026-11-02 08:34",
+   "status": "succeeded",
+   "seconds": 25.0
+  },
+  {
+   "run_id": "nightly_2026-11-01_9d22f4",
+   "started": "2026-11-01 08:10",
+   "status": "succeeded",
+   "seconds": 42.0
+  },
+  {
+   "run_id": "nightly_2026-10-31_29ee27",
+   "started": "2026-10-31 08:04",
+   "status": "succeeded",
+   "seconds": 42.0
+  },
+  {
+   "run_id": "nightly_2026-10-30_06c5e2",
+   "started": "2026-10-30 08:15",
+   "status": "succeeded",
+   "seconds": 43.0
+  },
+  {
+   "run_id": "nightly_2026-10-29_f41f74",
+   "started": "2026-10-29 08:15",
+   "status": "succeeded",
+   "seconds": 46.0
+  },
+  {
+   "run_id": "nightly_2026-10-28_76b3b9",
+   "started": "2026-10-28 08:13",
+   "status": "succeeded",
+   "seconds": 36.0
+  },
+  {
+   "run_id": "nightly_2026-10-27_5485c3",
+   "started": "2026-10-27 08:02",
+   "status": "succeeded",
+   "seconds": 25.0
+  },
+  {
+   "run_id": "nightly_2026-10-26_73310e",
+   "started": "2026-10-26 08:07",
+   "status": "succeeded",
+   "seconds": 18.0
+  },
+  {
+   "run_id": "nightly_2026-10-25_390b8e",
+   "started": "2026-10-25 07:51",
+   "status": "succeeded",
+   "seconds": 45.0
+  },
+  {
+   "run_id": "nightly_2026-10-24_1a8368",
+   "started": "2026-10-24 07:49",
+   "status": "succeeded",
+   "seconds": 37.0
+  },
+  {
+   "run_id": "nightly_2026-10-23_8c80c6",
+   "started": "2026-10-23 07:58",
+   "status": "succeeded",
+   "seconds": 44.0
+  },
+  {
+   "run_id": "nightly_2026-10-22_af4d49",
+   "started": "2026-10-22 08:01",
+   "status": "succeeded",
+   "seconds": 46.0
+  },
+  {
+   "run_id": "nightly_2026-10-21_bec5d7",
+   "started": "2026-10-21 07:59",
+   "status": "succeeded",
+   "seconds": 25.0
+  }
+ ],
+ "watermarks": [
+  {
+   "source": "cincy_311",
+   "watermark": "2026-11-01"
+  },
+  {
+   "source": "nhtsa_complaints",
+   "watermark": "2026-10-29"
+  },
+  {
+   "source": "weather_daily",
+   "watermark": "2026-10-28"
+  }
+ ],
+ "kpis": {
+  "requests_30d": 10757,
+  "open_now": 15207,
+  "median_days_to_close_90d": 5.0
+ },
+ "daily": [
+  {
+   "day": "2026-08-05",
+   "requests": 747,
+   "precip_in": 0.0,
+   "temp_max_f": 87.0
+  },
+  {
+   "day": "2026-08-06",
+   "requests": 711,
+   "precip_in": 0.0,
+   "temp_max_f": 86.0
+  },
+  {
+   "day": "2026-08-07",
+   "requests": 482,
+   "precip_in": 0.68,
+   "temp_max_f": 84.0
+  },
+  {
+   "day": "2026-08-08",
+   "requests": 240,
+   "precip_in": 0.0,
+   "temp_max_f": 88.0
+  },
+  {
+   "day": "2026-08-09",
+   "requests": 206,
+   "precip_in": 0.0,
+   "temp_max_f": 87.0
+  },
+  {
+   "day": "2026-08-10",
+   "requests": 650,
+   "precip_in": 0.0,
+   "temp_max_f": 90.0
+  },
+  {
+   "day": "2026-08-11",
+   "requests": 897,
+   "precip_in": 0.57,
+   "temp_max_f": 85.0
+  },
+  {
+   "day": "2026-08-12",
+   "requests": 703,
+   "precip_in": 0.83,
+   "temp_max_f": 70.0
+  },
+  {
+   "day": "2026-08-13",
+   "requests": 680,
+   "precip_in": 0.0,
+   "temp_max_f": 87.0
+  },
+  {
+   "day": "2026-08-14",
+   "requests": 599,
+   "precip_in": 0.0,
+   "temp_max_f": 85.0
+  },
+  {
+   "day": "2026-08-15",
+   "requests": 295,
+   "precip_in": 0.02,
+   "temp_max_f": 87.0
+  },
+  {
+   "day": "2026-08-16",
+   "requests": 238,
+   "precip_in": 0.0,
+   "temp_max_f": 90.0
+  },
+  {
+   "day": "2026-08-17",
+   "requests": 685,
+   "precip_in": 0.17,
+   "temp_max_f": 84.0
+  },
+  {
+   "day": "2026-08-18",
+   "requests": 725,
+   "precip_in": 0.0,
+   "temp_max_f": 81.0
+  },
+  {
+   "day": "2026-08-19",
+   "requests": 651,
+   "precip_in": 0.02,
+   "temp_max_f": 79.0
+  },
+  {
+   "day": "2026-08-20",
+   "requests": 661,
+   "precip_in": 0.25,
+   "temp_max_f": 82.0
+  },
+  {
+   "day": "2026-08-21",
+   "requests": 514,
+   "precip_in": 0.0,
+   "temp_max_f": 86.0
+  },
+  {
+   "day": "2026-08-22",
+   "requests": 228,
+   "precip_in": 0.0,
+   "temp_max_f": 84.0
+  },
+  {
+   "day": "2026-08-23",
+   "requests": 226,
+   "precip_in": 0.0,
+   "temp_max_f": 80.0
+  },
+  {
+   "day": "2026-08-24",
+   "requests": 669,
+   "precip_in": 0.0,
+   "temp_max_f": 78.0
+  },
+  {
+   "day": "2026-08-25",
+   "requests": 697,
+   "precip_in": 0.0,
+   "temp_max_f": 81.0
+  },
+  {
+   "day": "2026-08-26",
+   "requests": 587,
+   "precip_in": 0.0,
+   "temp_max_f": 84.0
+  },
+  {
+   "day": "2026-08-27",
+   "requests": 633,
+   "precip_in": 0.0,
+   "temp_max_f": 85.0
+  },
+  {
+   "day": "2026-08-28",
+   "requests": 464,
+   "precip_in": 0.0,
+   "temp_max_f": 84.0
+  },
+  {
+   "day": "2026-08-29",
+   "requests": 203,
+   "precip_in": 0.0,
+   "temp_max_f": 87.0
+  },
+  {
+   "day": "2026-08-30",
+   "requests": 226,
+   "precip_in": 0.0,
+   "temp_max_f": 90.0
+  },
+  {
+   "day": "2026-08-31",
+   "requests": 721,
+   "precip_in": 0.0,
+   "temp_max_f": 92.0
+  },
+  {
+   "day": "2026-09-01",
+   "requests": 704,
+   "precip_in": 0.0,
+   "temp_max_f": 94.0
+  },
+  {
+   "day": "2026-09-02",
+   "requests": 620,
+   "precip_in": 0.0,
+   "temp_max_f": 95.0
+  },
+  {
+   "day": "2026-09-03",
+   "requests": 553,
+   "precip_in": 0.0,
+   "temp_max_f": 96.0
+  },
+  {
+   "day": "2026-09-04",
+   "requests": 416,
+   "precip_in": 0.0,
+   "temp_max_f": 97.0
+  },
+  {
+   "day": "2026-09-05",
+   "requests": 164,
+   "precip_in": 0.24,
+   "temp_max_f": 92.0
+  },
+  {
+   "day": "2026-09-06",
+   "requests": 149,
+   "precip_in": 0.0,
+   "temp_max_f": 83.0
+  },
+  {
+   "day": "2026-09-07",
+   "requests": 279,
+   "precip_in": 0.0,
+   "temp_max_f": 85.0
+  },
+  {
+   "day": "2026-09-08",
+   "requests": 596,
+   "precip_in": 0.0,
+   "temp_max_f": 88.0
+  },
+  {
+   "day": "2026-09-09",
+   "requests": 775,
+   "precip_in": 0.0,
+   "temp_max_f": 92.0
+  },
+  {
+   "day": "2026-09-10",
+   "requests": 776,
+   "precip_in": 0.1,
+   "temp_max_f": 80.0
+  },
+  {
+   "day": "2026-09-11",
+   "requests": 1073,
+   "precip_in": 0.0,
+   "temp_max_f": 83.0
+  },
+  {
+   "day": "2026-09-12",
+   "requests": 467,
+   "precip_in": 0.61,
+   "temp_max_f": 82.0
+  },
+  {
+   "day": "2026-09-13",
+   "requests": 251,
+   "precip_in": 0.0,
+   "temp_max_f": 90.0
+  },
+  {
+   "day": "2026-09-14",
+   "requests": 554,
+   "precip_in": 0.0,
+   "temp_max_f": 78.0
+  },
+  {
+   "day": "2026-09-15",
+   "requests": 646,
+   "precip_in": 0.0,
+   "temp_max_f": 92.0
+  },
+  {
+   "day": "2026-09-16",
+   "requests": 708,
+   "precip_in": 0.0,
+   "temp_max_f": 92.0
+  },
+  {
+   "day": "2026-09-17",
+   "requests": 730,
+   "precip_in": 0.0,
+   "temp_max_f": 93.0
+  },
+  {
+   "day": "2026-09-18",
+   "requests": 572,
+   "precip_in": 0.01,
+   "temp_max_f": 84.0
+  },
+  {
+   "day": "2026-09-19",
+   "requests": 155,
+   "precip_in": 0.0,
+   "temp_max_f": 91.0
+  },
+  {
+   "day": "2026-09-20",
+   "requests": 246,
+   "precip_in": 0.22,
+   "temp_max_f": 93.0
+  },
+  {
+   "day": "2026-09-21",
+   "requests": 538,
+   "precip_in": 0.23,
+   "temp_max_f": 71.0
+  },
+  {
+   "day": "2026-09-22",
+   "requests": 531,
+   "precip_in": 0.0,
+   "temp_max_f": 65.0
+  },
+  {
+   "day": "2026-09-23",
+   "requests": 492,
+   "precip_in": 0.03,
+   "temp_max_f": 64.0
+  },
+  {
+   "day": "2026-09-24",
+   "requests": 530,
+   "precip_in": 0.0,
+   "temp_max_f": 67.0
+  },
+  {
+   "day": "2026-09-25",
+   "requests": 464,
+   "precip_in": 0.0,
+   "temp_max_f": 73.0
+  },
+  {
+   "day": "2026-09-26",
+   "requests": 228,
+   "precip_in": 0.0,
+   "temp_max_f": 74.0
+  },
+  {
+   "day": "2026-09-27",
+   "requests": 186,
+   "precip_in": 0.0,
+   "temp_max_f": 75.0
+  },
+  {
+   "day": "2026-09-28",
+   "requests": 545,
+   "precip_in": 0.0,
+   "temp_max_f": 76.0
+  },
+  {
+   "day": "2026-09-29",
+   "requests": 552,
+   "precip_in": 0.0,
+   "temp_max_f": 79.0
+  },
+  {
+   "day": "2026-09-30",
+   "requests": 556,
+   "precip_in": 0.0,
+   "temp_max_f": 85.0
+  },
+  {
+   "day": "2026-10-01",
+   "requests": 526,
+   "precip_in": 0.0,
+   "temp_max_f": 88.0
+  },
+  {
+   "day": "2026-10-02",
+   "requests": 360,
+   "precip_in": 0.2,
+   "temp_max_f": 75.0
+  },
+  {
+   "day": "2026-10-03",
+   "requests": 164,
+   "precip_in": 0.0,
+   "temp_max_f": 71.0
+  },
+  {
+   "day": "2026-10-04",
+   "requests": 167,
+   "precip_in": 0.0,
+   "temp_max_f": 75.0
+  },
+  {
+   "day": "2026-10-05",
+   "requests": 556,
+   "precip_in": 0.0,
+   "temp_max_f": 71.0
+  },
+  {
+   "day": "2026-10-06",
+   "requests": 553,
+   "precip_in": 0.0,
+   "temp_max_f": 72.0
+  },
+  {
+   "day": "2026-10-07",
+   "requests": 485,
+   "precip_in": 0.0,
+   "temp_max_f": 81.0
+  },
+  {
+   "day": "2026-10-08",
+   "requests": 428,
+   "precip_in": 0.0,
+   "temp_max_f": 79.0
+  },
+  {
+   "day": "2026-10-09",
+   "requests": 367,
+   "precip_in": 0.0,
+   "temp_max_f": 82.0
+  },
+  {
+   "day": "2026-10-10",
+   "requests": 144,
+   "precip_in": 0.06,
+   "temp_max_f": 68.0
+  },
+  {
+   "day": "2026-10-11",
+   "requests": 149,
+   "precip_in": 0.03,
+   "temp_max_f": 64.0
+  },
+  {
+   "day": "2026-10-12",
+   "requests": 521,
+   "precip_in": 0.0,
+   "temp_max_f": 83.0
+  },
+  {
+   "day": "2026-10-13",
+   "requests": 603,
+   "precip_in": 0.0,
+   "temp_max_f": 89.0
+  },
+  {
+   "day": "2026-10-14",
+   "requests": 489,
+   "precip_in": 0.22,
+   "temp_max_f": 84.0
+  },
+  {
+   "day": "2026-10-15",
+   "requests": 503,
+   "precip_in": 0.0,
+   "temp_max_f": 75.0
+  },
+  {
+   "day": "2026-10-16",
+   "requests": 357,
+   "precip_in": 0.08,
+   "temp_max_f": 72.0
+  },
+  {
+   "day": "2026-10-17",
+   "requests": 145,
+   "precip_in": 0.0,
+   "temp_max_f": 55.0
+  },
+  {
+   "day": "2026-10-18",
+   "requests": 157,
+   "precip_in": 0.0,
+   "temp_max_f": 66.0
+  },
+  {
+   "day": "2026-10-19",
+   "requests": 512,
+   "precip_in": 0.0,
+   "temp_max_f": 70.0
+  },
+  {
+   "day": "2026-10-20",
+   "requests": 524,
+   "precip_in": 0.0,
+   "temp_max_f": 72.0
+  },
+  {
+   "day": "2026-10-21",
+   "requests": 470,
+   "precip_in": 0.0,
+   "temp_max_f": 72.0
+  },
+  {
+   "day": "2026-10-22",
+   "requests": 381,
+   "precip_in": 0.0,
+   "temp_max_f": 70.0
+  },
+  {
+   "day": "2026-10-23",
+   "requests": 324,
+   "precip_in": 0.0,
+   "temp_max_f": 70.0
+  },
+  {
+   "day": "2026-10-24",
+   "requests": 159,
+   "precip_in": 0.0,
+   "temp_max_f": 71.0
+  },
+  {
+   "day": "2026-10-25",
+   "requests": 191,
+   "precip_in": 0.0,
+   "temp_max_f": 73.0
+  },
+  {
+   "day": "2026-10-26",
+   "requests": 478,
+   "precip_in": 0.0,
+   "temp_max_f": 75.0
+  },
+  {
+   "day": "2026-10-27",
+   "requests": 515,
+   "precip_in": 0.0,
+   "temp_max_f": 76.0
+  },
+  {
+   "day": "2026-10-28",
+   "requests": 446,
+   "precip_in": 0.0,
+   "temp_max_f": 76.0
+  },
+  {
+   "day": "2026-10-29",
+   "requests": 440,
+   "precip_in": null,
+   "temp_max_f": null
+  },
+  {
+   "day": "2026-10-30",
+   "requests": 390,
+   "precip_in": null,
+   "temp_max_f": null
+  },
+  {
+   "day": "2026-10-31",
+   "requests": 147,
+   "precip_in": null,
+   "temp_max_f": null
+  },
+  {
+   "day": "2026-11-01",
+   "requests": 156,
+   "precip_in": null,
+   "temp_max_f": null
+  }
+ ],
+ "categories": [
+  {
+   "category": "Trash and recycling",
+   "requests": 5958,
+   "median_days_to_close": 3.0
+  },
+  {
+   "category": "Streets and traffic",
+   "requests": 1327,
+   "median_days_to_close": 1.0
+  },
+  {
+   "category": "Other",
+   "requests": 1281,
+   "median_days_to_close": 1.0
+  },
+  {
+   "category": "Buildings and property",
+   "requests": 1093,
+   "median_days_to_close": 5.0
+  },
+  {
+   "category": "Vehicles and parking",
+   "requests": 402,
+   "median_days_to_close": 3.0
+  },
+  {
+   "category": "Dumping, graffiti and litter",
+   "requests": 398,
+   "median_days_to_close": 3.0
+  },
+  {
+   "category": "Trees and parks",
+   "requests": 202,
+   "median_days_to_close": 4.0
+  },
+  {
+   "category": "Water and sewer",
+   "requests": 96,
+   "median_days_to_close": 1.0
+  }
+ ],
+ "quarantine": [
+  {
+   "dq_reason": "closed_before_created",
+   "rows": 126
+  },
+  {
+   "dq_reason": "missing_location",
+   "rows": 6
+  },
+  {
+   "dq_reason": "location_outside_city",
+   "rows": 5
+  }
+ ],
+ "quarantine_total": 137,
+ "live_metrics": [
+  {
+   "day": "2026-10-13",
+   "rows": 3404,
+   "accuracy": 0.8064,
+   "macro_precision": 0.7815,
+   "macro_recall": 0.8347,
+   "macro_f1": 0.8013
+  },
+  {
+   "day": "2026-10-14",
+   "rows": 3349,
+   "accuracy": 0.8059,
+   "macro_precision": 0.7816,
+   "macro_recall": 0.834,
+   "macro_f1": 0.8012
+  },
+  {
+   "day": "2026-10-15",
+   "rows": 3515,
+   "accuracy": 0.802,
+   "macro_precision": 0.7776,
+   "macro_recall": 0.8324,
+   "macro_f1": 0.7985
+  },
+  {
+   "day": "2026-10-16",
+   "rows": 3515,
+   "accuracy": 0.8031,
+   "macro_precision": 0.7787,
+   "macro_recall": 0.831,
+   "macro_f1": 0.7988
+  },
+  {
+   "day": "2026-10-17",
+   "rows": 3510,
+   "accuracy": 0.8009,
+   "macro_precision": 0.7772,
+   "macro_recall": 0.8287,
+   "macro_f1": 0.7971
+  },
+  {
+   "day": "2026-10-18",
+   "rows": 3488,
+   "accuracy": 0.8007,
+   "macro_precision": 0.7758,
+   "macro_recall": 0.8275,
+   "macro_f1": 0.7952
+  },
+  {
+   "day": "2026-10-19",
+   "rows": 3317,
+   "accuracy": 0.8034,
+   "macro_precision": 0.7765,
+   "macro_recall": 0.8298,
+   "macro_f1": 0.7964
+  },
+  {
+   "day": "2026-10-20",
+   "rows": 3459,
+   "accuracy": 0.8072,
+   "macro_precision": 0.7794,
+   "macro_recall": 0.8353,
+   "macro_f1": 0.8002
+  },
+  {
+   "day": "2026-10-21",
+   "rows": 3385,
+   "accuracy": 0.8077,
+   "macro_precision": 0.7788,
+   "macro_recall": 0.8354,
+   "macro_f1": 0.7996
+  },
+  {
+   "day": "2026-10-22",
+   "rows": 3381,
+   "accuracy": 0.8089,
+   "macro_precision": 0.7787,
+   "macro_recall": 0.8371,
+   "macro_f1": 0.7998
+  },
+  {
+   "day": "2026-10-23",
+   "rows": 3400,
+   "accuracy": 0.8106,
+   "macro_precision": 0.7786,
+   "macro_recall": 0.8376,
+   "macro_f1": 0.7993
+  },
+  {
+   "day": "2026-10-24",
+   "rows": 3383,
+   "accuracy": 0.8108,
+   "macro_precision": 0.7804,
+   "macro_recall": 0.8379,
+   "macro_f1": 0.8007
+  },
+  {
+   "day": "2026-10-25",
+   "rows": 3401,
+   "accuracy": 0.8095,
+   "macro_precision": 0.7791,
+   "macro_recall": 0.8358,
+   "macro_f1": 0.7991
+  },
+  {
+   "day": "2026-10-26",
+   "rows": 3268,
+   "accuracy": 0.8136,
+   "macro_precision": 0.7844,
+   "macro_recall": 0.8392,
+   "macro_f1": 0.804
+  },
+  {
+   "day": "2026-10-27",
+   "rows": 3197,
+   "accuracy": 0.8133,
+   "macro_precision": 0.785,
+   "macro_recall": 0.8392,
+   "macro_f1": 0.8044
+  },
+  {
+   "day": "2026-10-28",
+   "rows": 3362,
+   "accuracy": 0.8135,
+   "macro_precision": 0.784,
+   "macro_recall": 0.841,
+   "macro_f1": 0.8045
+  },
+  {
+   "day": "2026-10-29",
+   "rows": 3357,
+   "accuracy": 0.8114,
+   "macro_precision": 0.7822,
+   "macro_recall": 0.8403,
+   "macro_f1": 0.8031
+  },
+  {
+   "day": "2026-10-30",
+   "rows": 3332,
+   "accuracy": 0.8115,
+   "macro_precision": 0.7809,
+   "macro_recall": 0.8392,
+   "macro_f1": 0.8022
+  },
+  {
+   "day": "2026-10-31",
+   "rows": 3315,
+   "accuracy": 0.8084,
+   "macro_precision": 0.7777,
+   "macro_recall": 0.8375,
+   "macro_f1": 0.7995
+  },
+  {
+   "day": "2026-11-01",
+   "rows": 3335,
+   "accuracy": 0.8069,
+   "macro_precision": 0.7784,
+   "macro_recall": 0.838,
+   "macro_f1": 0.8006
+  },
+  {
+   "day": "2026-11-02",
+   "rows": 3192,
+   "accuracy": 0.8067,
+   "macro_precision": 0.778,
+   "macro_recall": 0.8385,
+   "macro_f1": 0.8008
+  },
+  {
+   "day": "2026-11-03",
+   "rows": 3116,
+   "accuracy": 0.8065,
+   "macro_precision": 0.7771,
+   "macro_recall": 0.8383,
+   "macro_f1": 0.8002
+  }
+ ],
+ "predictions": [
+  {
+   "complaint_id": "11774574",
+   "received": "2026-10-29",
+   "make": "HONDA",
+   "model": "PILOT",
+   "model_year": 2018,
+   "text": "During acceleration between 1000-2000 rpm when I back out of the driveway or slowly start to accelerate on the street I hear a knocking sound only at ",
+   "actual": "Engine",
+   "predicted": "Engine",
+   "confidence": 0.3864000141620636
+  },
+  {
+   "complaint_id": "11774573",
+   "received": "2026-10-29",
+   "make": "KIA",
+   "model": "SELTOS",
+   "model_year": 2021,
+   "text": "The vehicle experienced a sudden loss of motive power and triggered diagnostic trouble code P1327, which indicates severe internal engine damage and b",
+   "actual": "Engine",
+   "predicted": "Engine",
+   "confidence": 0.6743000149726868
+  },
+  {
+   "complaint_id": "11774572",
+   "received": "2026-10-29",
+   "make": "HONDA",
+   "model": "CIVIC",
+   "model_year": 2017,
+   "text": "While Driving i looked in the rear mirror and noticed my rear glass was shattered. I pulled over to inspect it and there was no visible points of impa",
+   "actual": "Lights and visibility",
+   "predicted": "Lights and visibility",
+   "confidence": 0.8526999950408936
+  },
+  {
+   "complaint_id": "11774570",
+   "received": "2026-10-29",
+   "make": "FORD",
+   "model": "ECOSPORT",
+   "model_year": 2019,
+   "text": "My 2019 Ford EcoSport is subject to safety recall 23S64 (NHTSA 23V905), involving the engine oil pump drive belt and tensioner.  I have been trying to",
+   "actual": "Engine",
+   "predicted": "Fuel and propulsion",
+   "confidence": 0.3325999975204468
+  },
+  {
+   "complaint_id": "11774569",
+   "received": "2026-10-29",
+   "make": "HONDA",
+   "model": "PILOT",
+   "model_year": 2019,
+   "text": "While driving my 2019 Honda Pilot at highway speeds 70 mph, the dashboard suddenly displayed a severe safety warning stating \"Transmission Temp Too Ho",
+   "actual": "Powertrain",
+   "predicted": "Fuel and propulsion",
+   "confidence": 0.2565000057220459
+  },
+  {
+   "complaint_id": "11774567",
+   "received": "2026-10-29",
+   "make": "SUBARU",
+   "model": "FORESTER",
+   "model_year": 2017,
+   "text": "The Occupant Detection Sensor had a recall in 2019 and we replaced under that recall in 2020, but the part has once again failed and in looking at oth",
+   "actual": "Air bags",
+   "predicted": "Air bags",
+   "confidence": 0.9258999824523926
+  }
+ ],
+ "offline_metrics": {
+  "model": "bge-small+logreg",
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "trained_at": "2026-10-13T22:13:53+00:00",
+  "split": {
+   "train_received_before": "2026-07-01",
+   "test_received_from": "2026-07-01",
+   "train_rows": 3900,
+   "test_rows": 1300
+  },
+  "accuracy": 0.8469,
+  "macro": {
+   "precision": 0.847,
+   "recall": 0.8469,
+   "f1-score": 0.8462
+  },
+  "per_class": {
+   "Air bags": {
+    "precision": 0.9583,
+    "recall": 0.92,
+    "f1-score": 0.9388,
+    "support": 100.0
+   },
+   "Brakes": {
+    "precision": 0.901,
+    "recall": 0.91,
+    "f1-score": 0.9055,
+    "support": 100.0
+   },
+   "Driver assistance": {
+    "precision": 0.8365,
+    "recall": 0.87,
+    "f1-score": 0.8529,
+    "support": 100.0
+   },
+   "Electrical": {
+    "precision": 0.7097,
+    "recall": 0.66,
+    "f1-score": 0.6839,
+    "support": 100.0
+   },
+   "Engine": {
+    "precision": 0.8283,
+    "recall": 0.82,
+    "f1-score": 0.8241,
+    "support": 100.0
+   },
+   "Fuel and propulsion": {
+    "precision": 0.783,
+    "recall": 0.83,
+    "f1-score": 0.8058,
+    "support": 100.0
+   },
+   "Lights and visibility": {
+    "precision": 0.8438,
+    "recall": 0.81,
+    "f1-score": 0.8265,
+    "support": 100.0
+   },
+   "Powertrain": {
+    "precision": 0.7736,
+    "recall": 0.82,
+    "f1-score": 0.7961,
+    "support": 100.0
+   },
+   "Seats and belts": {
+    "precision": 0.95,
+    "recall": 0.95,
+    "f1-score": 0.95,
+    "support": 100.0
+   },
+   "Steering": {
+    "precision": 0.9789,
+    "recall": 0.93,
+    "f1-score": 0.9538,
+    "support": 100.0
+   },
+   "Structure and body": {
+    "precision": 0.7753,
+    "recall": 0.69,
+    "f1-score": 0.7302,
+    "support": 100.0
+   },
+   "Suspension": {
+    "precision": 0.8137,
+    "recall": 0.83,
+    "f1-score": 0.8218,
+    "support": 100.0
+   },
+   "Wheels and tires": {
+    "precision": 0.8584,
+    "recall": 0.97,
+    "f1-score": 0.9108,
+    "support": 100.0
+   }
+  },
+  "embed_texts_per_s": 22.7
+ }
+}

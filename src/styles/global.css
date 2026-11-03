@@ -15,30 +15,19 @@
   --line: rgba(29, 26, 22, 0.13); --line2: rgba(29, 26, 22, 0.24);
   --accent: #1f6a8e; --lily: #9e2f27; --onaccent: #f6f3ee;
 }
-/* Photo themes for the two landing-page options. Each takes its colors from its photograph. */
-/* Sunrise: plum-charcoal dusk with an ember accent (night); warm sandstone paper (day). */
+/* Sunrise: the site palette, sampled from the home photograph. Night is the dark ridge
+   (#402f30) taken deeper; day is the mauve sky (#967672) washed out to paper, like the
+   reference site tints its pages with its photo. The accent is the photo's orange (#e27138). */
 :root[data-theme='sunrise'],
 :root[data-theme='sunrise'][data-mode='night'] {
-  --bg: #1d1719; --paper: #261e20; --ink: #f2e7df; --soft: #bba69b; --faint: #8a7369;
-  --line: rgba(242, 231, 223, 0.12); --line2: rgba(242, 231, 223, 0.22);
-  --accent: #f0905a; --lily: #e0703e; --onaccent: #1d1719;
+  --bg: #1d1517; --paper: #271c1e; --ink: #f3e8e2; --soft: #c0aaa3; --faint: #8d7570;
+  --line: rgba(243, 232, 226, 0.12); --line2: rgba(243, 232, 226, 0.22);
+  --accent: #ee8a52; --lily: #e27138; --onaccent: #1d1517;
 }
 :root[data-theme='sunrise'][data-mode='day'] {
-  --bg: #f3ebe4; --paper: #f9f3ee; --ink: #2a1d1b; --soft: #66524a; --faint: #8c7469;
-  --line: rgba(42, 29, 27, 0.13); --line2: rgba(42, 29, 27, 0.24);
-  --accent: #b9542a; --lily: #b9542a; --onaccent: #f9f3ee;
-}
-/* Blue sky: deep alpine navy with a sky-blue accent and a pine-green seal (night); cool mist paper (day). */
-:root[data-theme='bluesky'],
-:root[data-theme='bluesky'][data-mode='night'] {
-  --bg: #0c1623; --paper: #13202f; --ink: #e4edf6; --soft: #9fb2c6; --faint: #66798e;
-  --line: rgba(228, 237, 246, 0.12); --line2: rgba(228, 237, 246, 0.22);
-  --accent: #6cb2f0; --lily: #3f7f5a; --onaccent: #0c1623;
-}
-:root[data-theme='bluesky'][data-mode='day'] {
-  --bg: #e6eef6; --paper: #f2f6fb; --ink: #0f1c2b; --soft: #475b70; --faint: #74879b;
-  --line: rgba(15, 28, 43, 0.13); --line2: rgba(15, 28, 43, 0.24);
-  --accent: #1f5fae; --lily: #2f6b48; --onaccent: #f2f6fb;
+  --bg: #efe4e0; --paper: #f7efec; --ink: #2b1d1d; --soft: #69534f; --faint: #8f7772;
+  --line: rgba(43, 29, 29, 0.13); --line2: rgba(43, 29, 29, 0.24);
+  --accent: #b5532a; --lily: #c55e2c; --onaccent: #f7efec;
 }
 :root {
   --serif: 'Fraunces', Georgia, serif;

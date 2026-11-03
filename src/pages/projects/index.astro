@@ -66,6 +66,7 @@ const years = [...new Set(projects.map((p) => p.date.slice(0, 4)))];
   .pi a:hover h2 { color: var(--accent); }
   .pi p { margin: 8px 0 10px; color: var(--soft); font-size: 0.95rem; line-height: 1.6; max-width: 62ch; }
   .pi img { border: 1px solid var(--line); aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; width: 100%; }
+  .pi img[src$='.svg'] { object-fit: contain; object-position: center; background: #fbf6f3; padding: 6px; }
   .dr { margin-left: 12px; color: var(--lily); text-transform: uppercase; letter-spacing: 0.14em; }
   @media (max-width: 760px) { .yr { grid-template-columns: 1fr; gap: 10px; } .pi a { grid-template-columns: 1fr; gap: 14px; } .pi img { max-width: 360px; } }
 </style>

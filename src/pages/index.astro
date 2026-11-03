@@ -1,9 +1,11 @@
 ---
+// Home: the sunrise photograph as the hero, like the reference site; the color theme across
+// the whole site is taken from this photo (see global.css).
 import Base from '../layouts/Base.astro';
-import LilyHero from '../components/LilyHero.astro';
+import PhotoHero from '../components/PhotoHero.astro';
 import HomeSections from '../components/HomeSections.astro';
 ---
-<Base title="Sidanta Parajuli" active="home" overHero={true}>
-  <LilyHero />
+<Base title="Sidanta Parajuli" active="home" overHero={true} theme="sunrise">
+  <PhotoHero name="sunrise" alt="Snow peaks of the Himalaya under an orange sunrise sky, with misty ridges below" focus="40% 62%" />
   <HomeSections />
 </Base>

@@ -8,18 +8,14 @@ const href = (l) => (l.post ? base + l.post : l.href);
 <Base title="Profile · Sidanta Parajuli" active="profile">
   <main class="wrap" id="top">
     <section class="id">
-      <figure class="photo">
-        <div class="ph"><span>SP</span></div>
-        <figcaption class="meta">Photo coming</figcaption>
-      </figure>
-      <div>
-        <p class="label">Profile</p>
+      <p class="label">Profile</p>
+      <div class="id-main">
         <h1>{person.name}</h1>
         <p class="role meta">{person.title} · {person.org} · {person.place}</p>
         <p class="lede">{person.summary}</p>
         <div class="chips">
-          <a class="chip primary" href="https://sidantap.github.io/portfolio/portfolio.html#resume" target="_blank" rel="noopener">↓ Résumé</a>
-          {links.filter((l) => l.k !== 'resume').map((l) => <a class="chip" href={l.href} target={l.k === 'email' ? undefined : '_blank'} rel="noopener">{l.label}</a>)}
+          <a class="chip primary" href="https://sidantap.github.io/portfolio/portfolio.html#resume" target="_blank" rel="noopener">Résumé ↗</a>
+          {links.map((l) => <a class="chip" href={l.href} target={l.k === 'email' ? undefined : '_blank'} rel="noopener">{l.label}</a>)}
         </div>
         <div class="focus"><span class="meta">Focus</span><div class="chips">{person.focus.map((f) => <span class="tag">{f}</span>)}</div></div>
       </div>
@@ -76,30 +72,45 @@ const href = (l) => (l.post ? base + l.post : l.href);
       <dl class="sk">{skills.map(([k, v]) => <><dt class="meta">{k}</dt><dd>{v}</dd></>)}</dl>
     </section>
 
-    <section class="sec about">
+  </main>
+
+  <div class="band" aria-hidden="true">
+    <picture>
+      <source type="image/webp" srcset={`${base}hero/sunrise-1920.webp 1920w, ${base}hero/sunrise-3200.webp 3200w`} sizes="100vw" />
+      <img src={`${base}hero/sunrise-1920.jpg`} alt="" loading="lazy" />
+    </picture>
+    <span class="label">About</span>
+  </div>
+
+  <div class="wrap">
+    <section class="about">
       <div>
-        <p class="label">About</p>
-        <p class="txt">I'm Sidanta, Sid to most people. For two and a half years in college I was a campus lifeguard; watching a pool and watching a pipeline take the same skill, spotting the problem before it turns into an emergency. My minor was digital design, which probably explains why I care so much about how a dashboard looks.</p>
+        <p class="txt big">I'm Sidanta, Sid to most people. For two and a half years in college I was a campus lifeguard; watching a pool and watching a pipeline take the same skill, spotting the problem before it turns into an emergency. My minor was digital design, which probably explains why I care so much about how a dashboard looks.</p>
       </div>
       <div>
         <p class="label">How this site is made</p>
-        <p class="txt">Astro, hosted on GitHub Pages, built with Claude Code. Type is Fraunces, Instrument Sans and JetBrains Mono. The lily on the front page is drawn in particles that move out of the way of your cursor.</p>
+        <p class="txt">Astro, hosted on GitHub Pages, built with Claude Code. Type is Fraunces, Instrument Sans and JetBrains Mono. The colors come from the sunrise on the front page; the figures are drawn by a small Python script from each project's facts and, for the nightly pipeline, its real data.</p>
       </div>
     </section>
-  </main>
+  </div>
 </Base>
 
 <style>
-  .id { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 56px; padding-top: 56px; }
-  .photo { margin: 0; }
-  .ph { aspect-ratio: 4 / 5; background: color-mix(in srgb, var(--lily) 14%, var(--paper)); display: grid; place-items: center; }
-  .ph span { font: 300 4rem var(--serif); color: var(--lily); }
-  .photo figcaption { margin-top: 8px; text-transform: uppercase; letter-spacing: 0.16em; }
-  .id h1 { font-size: clamp(2.4rem, 5vw, 3.4rem); margin: 10px 0 12px; }
+  .id { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 8px 28px; padding-top: 64px; }
+  .id > .label { padding-top: 14px; }
+  .id-main { max-width: 760px; }
+  .id h1 { font-size: clamp(2.4rem, 5vw, 3.4rem); margin: 0 0 12px; }
   .role { letter-spacing: 0.1em; font-size: 0.78rem; color: var(--soft); }
-  .lede { color: var(--soft); font-family: var(--serif); font-weight: 300; font-size: 1.08rem; line-height: 1.7; margin: 18px 0 22px; max-width: 60ch; }
+  .lede { color: var(--soft); font-family: var(--serif); font-weight: 300; font-size: 1.12rem; line-height: 1.7; margin: 18px 0 24px; max-width: 62ch; }
   .focus { display: grid; grid-template-columns: 60px 1fr; gap: 12px; align-items: start; margin-top: 22px; }
   .focus > .meta { text-transform: uppercase; letter-spacing: 0.16em; padding-top: 4px; }
+  .band { position: relative; height: clamp(160px, 22vw, 260px); margin-top: clamp(70px, 9vw, 110px); overflow: hidden; }
+  .band picture, .band img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .band img { object-fit: cover; object-position: 50% 62%; }
+  .band::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20, 12, 14, 0.7), rgba(20, 12, 14, 0.05) 60%); }
+  .band .label { position: absolute; z-index: 1; left: clamp(20px, 5vw, 72px); top: 50%; transform: translateY(-50%); color: #fbe9de; }
+  .about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 56px; padding-top: 48px; }
+  .big { font-family: var(--serif); font-weight: 300; font-size: 1.15rem; color: var(--ink); }
   .cv { list-style: none; margin: 14px 0 0; padding: 0; border-top: 1px solid var(--line); }
   .cv > li { display: grid; grid-template-columns: 130px minmax(0, 1fr) 170px; gap: 8px 28px; padding: 24px 0; border-bottom: 1px solid var(--line); }
   .when { display: grid; gap: 14px; align-content: start; }
@@ -118,15 +129,14 @@ const href = (l) => (l.post ? base + l.post : l.href);
   .sk dt, .sk dd { padding: 14px 0; border-bottom: 1px solid var(--line); margin: 0; }
   .sk dt { text-transform: uppercase; letter-spacing: 0.14em; }
   .sk dd { color: var(--soft); font-size: 0.98rem; }
-  .about { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; }
   @media (max-width: 860px) {
-    .id { grid-template-columns: 1fr; gap: 28px; }
-    .photo { max-width: 240px; }
     .cv > li { grid-template-columns: 1fr; }
     .side { justify-items: start; }
     .side a, .side span { text-align: left; }
     .sk { grid-template-columns: 1fr; }
     .sk dt { border-bottom: 0; padding-bottom: 0; }
     .about { grid-template-columns: 1fr; gap: 30px; }
+    .id { grid-template-columns: 1fr; padding-top: 44px; }
+    .id > .label { padding-top: 0; }
   }
 </style>

@@ -5,8 +5,9 @@ A mockup of Sidanta Parajuli's personal website, restructured after
 lists; a Projects index with search and tags; a page per project with a sticky Contents list;
 a Design gallery; and a Profile page that is the whole résumé.
 
-- **Home:** the red spider lily in particles, then links, projects, experience and design.
+- **Home:** the sunrise photograph as the hero, then links, projects, experience and design. The site's colors are sampled from that photo. The particle-lily version is kept at `/lily/`.
 - **Projects:** `src/pages/projects/*.md`, one Markdown file per project. Add a file to add a project.
+- **Figures:** `python3 scripts/figures.py` redraws every diagram into `public/fig/`; the Nightly 311 charts use `scripts/nightly-snapshot.json`.
 - **Design:** placeholders in `src/data/site.js` until the real pieces arrive.
 - **Profile:** experience, selected work, education and skills, all from `src/data/site.js`.
 

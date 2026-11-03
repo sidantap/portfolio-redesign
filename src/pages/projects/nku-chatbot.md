@@ -1,14 +1,14 @@
 ---
 layout: ../../layouts/Project.astro
 title: An NKU chatbot on a fine-tuned GPT-2
-kind: Research
-org: NKU
+kind: Machine learning research
+org: NKU · research poster
 date: '2024-08'
 period: Feb – Aug 2024
-draft: true
 summary: We built 1,611 training samples from the NKU website and fine-tuned GPT-2 on them, so it could answer questions about Northern Kentucky University better than a general-purpose chatbot.
 impact: 10–15% better than ChatGPT on NKU-specific test questions
-tags: [llm, fine-tuning, nlp, python, research]
+img: fig/chatbot-pipeline.svg
+tags: [llm fine-tuning, instruction tuning, data curation, web scraping, transformers, gpt-2, aws ec2 and s3, python]
 links: []
 ---
 
@@ -17,6 +17,8 @@ This was a research poster at the NKU School of Computing & Analytics, with Simr
 ## The question
 
 General chatbots know a little about everything and not much about one place. Ask about a specific university's programs, offices or mission and you get something vague or wrong. Could a much smaller model, trained on that one university's own pages, answer those questions better?
+
+<figure><img src="../../fig/chatbot-pipeline.svg" alt="Pipeline: collect nku.edu pages, extract text with Jina, curate 1,611 samples, format as instruction, input and output with GPT-4o and manual review, fine-tune GPT-2, evaluate against ChatGPT" /><figcaption>Fig. 1 · From web pages to an evaluated model</figcaption></figure>
 
 ## Building the data
 

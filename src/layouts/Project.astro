@@ -53,8 +53,10 @@ const base = import.meta.env.BASE_URL;
   .body :global(p), .body :global(li) { color: color-mix(in srgb, var(--ink) 88%, var(--soft)); }
   .body :global(strong) { color: var(--ink); font-weight: 500; }
   .body :global(a) { color: var(--accent); text-underline-offset: 3px; }
-  .body :global(figure) { margin: 30px 0; }
-  .body :global(figure img) { border: 1px solid var(--line); }
+  .body :global(figure) { margin: 34px 0; position: relative; z-index: 2; }
+  .body :global(figure img) { border: 1px solid var(--line); width: 100%; cursor: zoom-in; }
+  /* figures break out across the Contents column so diagrams stay readable */
+  @media (min-width: 901px) { .body :global(figure) { margin-right: -270px; } }
   .body :global(figcaption) { font: 400 0.7rem/1.6 var(--mono); letter-spacing: 0.08em; color: var(--faint); margin-top: 10px; text-transform: uppercase; }
   .body :global(code) { font: 400 0.85em var(--mono); background: var(--paper); padding: 1px 5px; }
   .body :global(blockquote) { margin: 24px 0; padding-left: 16px; border-left: 2px solid var(--accent); font-family: var(--serif); font-style: italic; font-weight: 300; }
@@ -71,6 +73,11 @@ const base = import.meta.env.BASE_URL;
 
 <script is:inline>
 (function () {
+  // click a figure to open it full size
+  document.querySelectorAll('.body figure img').forEach(function (img) {
+    img.title = 'Open full size';
+    img.addEventListener('click', function () { window.open(img.src, '_blank', 'noopener'); });
+  });
   var links = [].slice.call(document.querySelectorAll('.toc a')); if (!links.length) return;
   var heads = links.map(function (a) { return document.getElementById(decodeURIComponent(a.hash.slice(1))); });
   function update() {

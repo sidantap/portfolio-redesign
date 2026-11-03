@@ -17,7 +17,6 @@ export const links = [
   { k: 'linkedin', label: 'LinkedIn', value: 'Sidanta Parajuli', href: 'https://www.linkedin.com/in/sid2003' },
   { k: 'comply', label: 'comply.', value: 'complydot.org', href: 'https://www.complydot.org' },
   { k: 'email', label: 'Email', value: 'sidantaparajuli@gmail.com', href: 'mailto:sidantaparajuli@gmail.com' },
-  { k: 'resume', label: 'Résumé', value: 'One-page résumé', href: 'profile/#top' },
 ];
 
 
@@ -32,13 +31,13 @@ export const experience = [
     when: '05/2025–12/2025', role: 'Data Analysis and Process Solutions Intern',
     logo: { src: 'logos/atlas.svg', ar: 5.85, label: 'Atlas Air' }, org: 'Atlas Air Worldwide · Erlanger, KY',
     text: 'Built the FAA drug and alcohol testing app in R Shiny: eligibility filtering, randomized selection, rollover, deduplication and SharePoint audit logging through Microsoft Graph. Power Automate flows for the pilot Master Training Schedule, crew scheduling and immigration reporting, part of about 25–30 staff hours saved a week. Logged usage across three internal tools into Power BI.',
-    links: [],
+    links: [{ t: 'FAA randomizer', post: 'projects/faa-randomizer/' }],
   },
   {
     when: 'Fall 2025', role: 'Teaching Assistant and Research Assistant',
     logo: { src: 'logos/nku.svg', ar: 4.11, label: 'Northern Kentucky University' }, org: 'NKU College of Informatics',
     text: 'TA for web development (INF 286): grading, an exam review quiz and office hours. Web scraping, machine learning and NLP in faculty research with Dr. Junxiu Zhou.',
-    links: [],
+    links: [{ t: 'Nurse sentiment', post: 'projects/nurse-sentiment/' }],
   },
   {
     when: 'Fall 2025', role: 'Innovation Fellow',
@@ -50,13 +49,13 @@ export const experience = [
     when: '08/2024–12/2024', role: 'Data Science Intern',
     logo: { src: 'logos/medpace.svg', ar: 6.95, label: 'Medpace' }, org: 'Medpace · Cincinnati, OH',
     text: 'dbt and SQL transformations on Snowflake, and cleaning and validating millions of clinical trial records with Python, SQL and R. An R Shiny map of global clinical studies for proposals, and monthly dashboard design sessions for 10+ analysts in the US and UK.',
-    links: [],
+    links: [{ t: 'Study map', post: 'projects/clinical-study-map/' }],
   },
   {
     when: '01/2024–08/2024', role: 'Data Analytics Intern',
     logo: { src: 'logos/motus.png', ar: 3.75, label: 'Motus Freight' }, org: 'Motus Freight · Bellevue, KY',
     text: 'Tableau Cloud dashboards on Turvo data, including a CO2 dashboard that contributed to a 12.4% drop in emissions and a regional dashboard across 4 regions and 49 states that contributed to a 15% rise in profit.',
-    links: [],
+    links: [{ t: 'Dashboards', post: 'projects/motus-dashboards/' }],
   },
 ];
 
@@ -79,12 +78,12 @@ export const selected = [
   {
     when: '2025', title: 'First-year nurse sentiment', tags: 'Python · NLTK · scikit-learn · R Shiny',
     text: 'A pipeline that scrapes forum posts from first-year nurses, cleans them, and classifies stress, depression, workplace and wellbeing themes, with an R Shiny dashboard of how sentiment changes over time.',
-    links: [],
+    links: [{ t: 'project page', post: 'projects/nurse-sentiment/' }],
   },
   {
     when: '2025', title: 'Cargo After COVID', tags: 'R Shiny · BTS data',
     text: 'Two decades of Bureau of Transportation Statistics air cargo data, 2003 to 2025, made explorable in a few clicks.',
-    links: [{ t: 'live app', href: 'https://sidantap.shinyapps.io/CargoAfterCOVID/' }],
+    links: [{ t: 'live app', href: 'https://sidantap.shinyapps.io/CargoAfterCOVID/' }, { t: 'project page', post: 'projects/cargo-after-covid/' }],
   },
 ];
 
