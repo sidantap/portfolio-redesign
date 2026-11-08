@@ -58,10 +58,12 @@ const pad = (n) => String(n).padStart(2, '0');
   /* at night the dark lettering in the art needs light behind it */
   .frame.cut { overflow: visible; }
   /* night: a plain, evenly lit paper card behind the art (no glow, no vignette) */
-  .frame.cut::before { content: ''; position: absolute; inset: -2.5%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.4s; border-radius: 14px; background: #f3ece8; }
+  .frame.cut::before { content: ''; position: absolute; inset: -2.5%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.4s; border-radius: 14px; background: #f4e2da; }
   .frame.cut img { position: relative; }
   :global(html[data-mode='night']) .frame.cut::before { opacity: 1; }
   :global(html[data-mode='night']) .frame.cut img { filter: none; }
+  /* turn the exposure down so the card sits back into the dark page; card and art dim together, so the art keeps its own contrast */
+  :global(html[data-mode='night']) .frame.cut { filter: brightness(0.66) saturate(0.92); }
   .tag-v { position: absolute; left: 12px; bottom: 10px; color: #fff; background: rgba(0, 0, 0, 0.45); padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.6rem; }
   .ctl { display: flex; justify-content: space-between; align-items: start; gap: 24px; padding: 0 clamp(20px, 5vw, 72px) 0 19vw; }
   .info { max-width: 62vw; min-height: 150px; }
