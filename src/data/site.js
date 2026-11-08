@@ -99,8 +99,8 @@ export const skills = [
 // Digital design work (minor in Digital Design, NKU). Descriptions from Sid's Adobe Portfolio.
 // kind: 'img' or 'video' (muted loop; poster shown until it plays).
 export const design = [
-  { title: 'Unreal Engine game environment', part: 'Cinematic', meta: 'Unreal Engine · environment design', kind: 'video', src: 'design/unreal-environment.mp4', poster: 'design/unreal-environment.webp',
-    text: 'An environment I created in Unreal Engine for a game, shown through a cinematic camera pass: low, slow shots along two Porsche 911s, one black and one red, set against each other in a split frame, in a dark night scene where the lighting and reflections set the mood. Muted loop.' },
+  { title: 'Zero Trace', part: 'Unreal Engine exterior · cinematic edit', meta: 'Unreal Engine · environment design · with sound', kind: 'film', src: 'design/unreal-environment.mp4', poster: 'design/unreal-environment.webp',
+    text: 'An exterior environment I built in Unreal Engine for a game called Zero Trace, for DFX 240 (spring 2025): a dark cyberpunk street of neon signs, burning wreckage and two Porsche 911s, one red and one black. The cinematic edit moves the camera low through the street and lets the neon and reflections carry the mood. The full 34-second edit, with sound: press play.' },
   { title: 'DFX 394 final project', part: 'Stop-motion short film', meta: 'Stop-motion · compositing · with sound', kind: 'film', src: 'design/dfx394-final.mp4', poster: 'design/dfx394-final.webp', thumb: 'design/dfx394-thumb.webp',
     text: 'A stop-motion short for DFX 394. An action figure is posed and shot frame by frame, a fraction of a movement at a time, so it seems to move on its own when the frames play back. Those shots are then composited into a night ride, a crash and painted city scenes, cut to music with animated lyric captions. The full film, with sound: press play.' },
   { title: 'Wing It', part: 'The 1980 Ford Sierra Cosworth', meta: 'Editorial design', kind: 'img', cut: true, src: 'design/wingit-ford.webp',
