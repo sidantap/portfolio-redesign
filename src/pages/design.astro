@@ -16,8 +16,10 @@ const pad = (n) => String(n).padStart(2, '0');
       <div class="track" id="track">
         {design.map((d, i) => (
           <figure class="slide" aria-label={`${d.title}, ${d.part}`}>
-            <div class="frame">
-              {d.kind === 'video'
+            <div class={'frame' + (d.cut ? ' cut' : '') + (d.kind === 'film' ? ' film' : '')}>
+              {d.kind === 'film'
+                ? <video poster={base + d.poster} controls playsinline preload="none" aria-label={d.title}><source src={base + d.src.replace('.mp4', '.webm')} type="video/webm" /><source src={base + d.src} type="video/mp4" /></video>
+                : d.kind === 'video'
                 ? <video data-src={base + d.src} poster={base + d.poster} muted loop playsinline preload="none" aria-label={d.title}><source data-src={base + d.src.replace('.mp4', '.webm')} type="video/webm" /><source data-src={base + d.src} type="video/mp4" /></video>
                 : <img src={base + d.src} alt={`${d.title}: ${d.part}`} loading={i < 2 ? 'eager' : 'lazy'} />}
               {d.kind === 'video' && <span class="tag-v meta">Video · muted</span>}
@@ -41,16 +43,26 @@ const pad = (n) => String(n).padStart(2, '0');
 <style>
   .dh { display: flex; justify-content: space-between; align-items: start; padding: 34px clamp(20px, 5vw, 72px) 0; }
   .right { text-align: right; text-transform: uppercase; letter-spacing: 0.16em; }
-  .stage { overflow: hidden; margin-top: 34px; }
+  .stage { overflow: hidden; margin-top: 0; padding: 34px 0 30px; }
   .track { display: flex; gap: 5vw; padding-left: 19vw; transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .slide { flex: 0 0 62vw; margin: 0; cursor: pointer; transition: opacity 0.45s, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .slide.on { cursor: default; }
   .slide:not(.on) { opacity: 0.3; transform: scale(0.9); }
-  .frame { position: relative; aspect-ratio: 16 / 9; background: #f6f3ee; border: 1px solid var(--line); overflow: hidden; }
+  .frame { position: relative; isolation: isolate; aspect-ratio: 16 / 9; background: #f6f3ee; border: 1px solid var(--line); overflow: hidden; }
   .frame img, .frame video { width: 100%; height: 100%; object-fit: contain; display: block; }
   .frame video { background: #000; object-fit: cover; }
+  .frame.film video { object-fit: contain; }
+  /* cut-out artwork sits straight on the page, no box */
+  .frame.cut { background: none; border: 0; }
+  .frame.cut img { filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18)); }
+  /* at night the dark lettering in the art needs light behind it: a soft glow, not a box */
+  .frame.cut { overflow: visible; }
+  .frame.cut::before { content: ''; position: absolute; inset: -9% -8%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.4s; background: radial-gradient(closest-side, rgba(246, 238, 233, 0.94) 0%, rgba(246, 238, 233, 0.86) 55%, rgba(246, 238, 233, 0) 100%); }
+  .frame.cut img { position: relative; }
+  :global(html[data-mode='night']) .frame.cut::before { opacity: 1; }
+  :global(html[data-mode='night']) .frame.cut img { filter: none; }
   .tag-v { position: absolute; left: 12px; bottom: 10px; color: #fff; background: rgba(0, 0, 0, 0.45); padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.6rem; }
-  .ctl { display: flex; justify-content: space-between; align-items: start; gap: 24px; padding: 26px clamp(20px, 5vw, 72px) 0 19vw; }
+  .ctl { display: flex; justify-content: space-between; align-items: start; gap: 24px; padding: 0 clamp(20px, 5vw, 72px) 0 19vw; }
   .info { max-width: 62vw; min-height: 150px; }
   .line { text-transform: uppercase; letter-spacing: 0.16em; margin: 0; }
   .accent { color: var(--accent); }
@@ -83,10 +95,12 @@ const pad = (n) => String(n).padStart(2, '0');
     [].forEach.call(slides, function (s, j) {
       s.classList.toggle('on', j === i);
       var v = s.querySelector('video'); if (!v) return;
+      if (s.querySelector('.film')) { if (j !== i) v.pause(); return; }
       if (j === i) {
         if (!v.dataset.loaded) { v.querySelectorAll('source').forEach(function (so) { so.src = so.dataset.src; }); v.dataset.loaded = '1'; v.load(); }
         if (reduce) v.controls = true; else v.play().catch(function () { v.controls = true; });
       } else v.pause();
+      if (v.controls && j !== i) v.pause();
     });
     var d = data[i];
     document.getElementById('cn').textContent = d.n; document.getElementById('cm').textContent = d.meta;

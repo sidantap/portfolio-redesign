@@ -58,10 +58,10 @@ const icon = { github: '<>', linkedin: 'in', comply: 'c.', email: '@', resume: '
     <section class="sec">
       <div class="sec-h"><span class="label">Digital design</span><a class="more" href={base + 'design/'}>All design →</a></div>
       <div class="tiles">
-        {[0, 2, 4, 6].map((k) => design[k]).map((d) => (
+        {[0, 1, 3, 5].map((k) => design[k]).map((d) => (
           <a class="dtile" href={base + 'design/#' + d.n}>
-            <img src={base + (d.poster || d.src)} alt="" loading="lazy" />
-            <span class="meta">{d.title}{d.kind === 'video' ? ' · video' : ''}</span>
+            <img class={d.cut ? 'cut' : ''} src={base + (d.poster || d.src)} alt="" loading="lazy" />
+            <span class="meta">{d.title}{d.kind !== 'img' ? ' · video' : ''}</span>
           </a>
         ))}
       </div>
@@ -71,6 +71,7 @@ const icon = { github: '<>', linkedin: 'in', comply: 'c.', email: '@', resume: '
 <style is:global>
   .dtile { display: grid; gap: 8px; text-decoration: none; }
   .dtile img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #f6f3ee; border: 1px solid var(--line); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .dtile img.cut { object-fit: contain; padding: 10px; background: color-mix(in srgb, var(--paper) 60%, transparent); }
   .dtile:hover img { transform: translateY(-3px); }
   .dtile .meta { text-transform: uppercase; letter-spacing: 0.14em; }
   .dtile:hover .meta { color: var(--accent); }
