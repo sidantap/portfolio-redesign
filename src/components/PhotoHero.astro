@@ -1,13 +1,15 @@
 ---
-// Full-screen photograph, like the reference site's hero. Responsive WebP with a JPEG fallback,
-// a slow settle-in on load and a gentle parallax as you scroll (both off under reduced motion).
+// Full-screen photograph, like the reference site's hero. The photo is a fixed backdrop for the
+// whole page: the hero is a clear window onto it, and everything below sits on a translucent,
+// lightly blurred panel so the sunrise shows through faintly as you scroll.
+// Responsive WebP with a JPEG fallback and a slow settle-in on load (off under reduced motion).
 const { name, alt, focus = 'center 60%', caption = '' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const src = (w, ext) => `${base}hero/${name}-${w}.${ext}`;
 const set = (ext) => [1280, 1920, 3200].map((w) => `${src(w, ext)} ${w}w`).join(', ');
 ---
 <section class="photo-hero" id="hero">
-  <picture>
+  <picture class="backdrop">
     <source type="image/webp" srcset={set('webp')} sizes="100vw" />
     <img src={src(1920, 'jpg')} srcset={set('jpg')} sizes="100vw" alt={alt} style={`object-position:${focus}`} fetchpriority="high" decoding="async" />
   </picture>
@@ -17,27 +19,32 @@ const set = (ext) => [1280, 1920, 3200].map((w) => `${src(w, ext)} ${w}w`).join(
 </section>
 
 <style>
-  .photo-hero { position: relative; height: 100vh; min-height: 560px; overflow: hidden; background: #111; }
-  picture, img { position: absolute; inset: 0; width: 100%; height: 100%; }
-  img { object-fit: cover; transform: scale(1.06) translateY(var(--py, 0px)); animation: settle 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; will-change: transform; }
-  @keyframes settle { to { transform: scale(1) translateY(var(--py, 0px)); } }
+  .photo-hero { position: relative; height: 100vh; min-height: 560px; }
+  .backdrop { position: fixed; inset: 0; z-index: -1; background: #1d1517; overflow: hidden; }
+  .backdrop img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); animation: settle 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+  @keyframes settle { to { transform: scale(1); } }
   .scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0) 22%, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 0.42) 100%); }
   .scroll, .cap { position: absolute; bottom: 26px; margin: 0; color: rgba(255, 255, 255, 0.82); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; }
   .scroll { left: clamp(20px, 5vw, 72px); display: flex; align-items: center; gap: 10px; }
   .scroll i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
   .cap { right: clamp(20px, 5vw, 72px); }
   @keyframes pulse { 50% { opacity: 0.3; } }
-  @media (prefers-reduced-motion: reduce) { img { animation: none; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .backdrop img { animation: none; transform: none; } }
   @media (max-width: 640px) { .cap { display: none; } }
 </style>
 
-<script is:inline>
-(function () {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var hero = document.getElementById('hero'), img = hero.querySelector('img'), q = false;
-  addEventListener('scroll', function () {
-    if (q) return; q = true;
-    requestAnimationFrame(function () { q = false; var y = Math.min(scrollY, hero.offsetHeight); img.style.setProperty('--py', (y * 0.25).toFixed(1) + 'px'); });
-  }, { passive: true });
-})();
-</script>
+<style is:global>
+  /* With the photo behind the page, the page itself goes see-through and the content below the
+     hero sits on a translucent panel tinted with the theme's own color. */
+  html:has(.photo-hero), html:has(.photo-hero) body { background: transparent; }
+  html:has(.photo-hero) body > main, html:has(.photo-hero) body > footer {
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    -webkit-backdrop-filter: blur(6px) saturate(1.1); backdrop-filter: blur(6px) saturate(1.1);
+  }
+  html:has(.photo-hero) body > main { padding-top: 1px; padding-bottom: clamp(60px, 8vw, 100px); }
+  html:has(.photo-hero) body > footer { margin-top: 0; }
+  html[data-mode='day']:has(.photo-hero) body > main, html[data-mode='day']:has(.photo-hero) body > footer { background: color-mix(in srgb, var(--bg) 84%, transparent); }
+  @media (prefers-reduced-transparency: reduce) {
+    html:has(.photo-hero) body > main, html:has(.photo-hero) body > footer { background: var(--bg); }
+  }
+</style>
