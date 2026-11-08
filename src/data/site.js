@@ -99,11 +99,9 @@ export const skills = [
 // Digital design work (minor in Digital Design, NKU). Descriptions from Sid's Adobe Portfolio.
 // kind: 'img' or 'video' (muted loop; poster shown until it plays).
 export const design = [
-  { title: 'The Porsche Experience', part: 'Garage screen', meta: 'GUI design · game start screen', kind: 'img', src: 'design/porsche-garage.webp',
-    text: 'A start screen for a game called The Porsche Experience: a garage to browse and pick cars, a workshop for colors and stats, menus for the store, maps and career, a social hub with multiplayer, inbox and a music player, and a push-to-start button.' },
-  { title: 'Shapes', part: 'Final animation', meta: 'Autodesk Maya · 3D animation', kind: 'video', src: 'design/maya-shapes.mp4', poster: 'design/maya-shapes.webp',
-    text: 'A 3D animation built from simple shapes: a globe made of cubes with a ring around it, a wall of blocks that collapses, and a tunnel of tiles that closes on a thank-you. Excerpts, muted.' },
-  { title: 'DFX 394 final project', part: 'Stop-motion short film', meta: 'Stop-motion · compositing · with sound', kind: 'film', src: 'design/dfx394-final.mp4', poster: 'design/dfx394-final.webp',
+  { title: 'Unreal Engine game environment', part: 'Cinematic', meta: 'Unreal Engine · environment design', kind: 'video', src: 'design/unreal-environment.mp4', poster: 'design/unreal-environment.webp',
+    text: 'An environment I created in Unreal Engine for a game, shown through a cinematic camera pass: low, slow shots along two Porsche 911s, one black and one red, set against each other in a split frame, in a dark night scene where the lighting and reflections set the mood. Muted loop.' },
+  { title: 'DFX 394 final project', part: 'Stop-motion short film', meta: 'Stop-motion · compositing · with sound', kind: 'film', src: 'design/dfx394-final.mp4', poster: 'design/dfx394-final.webp', thumb: 'design/dfx394-thumb.webp',
     text: 'A stop-motion short for DFX 394. An action figure is posed and shot frame by frame, a fraction of a movement at a time, so it seems to move on its own when the frames play back. Those shots are then composited into a night ride, a crash and painted city scenes, cut to music with animated lyric captions. The full film, with sound: press play.' },
   { title: 'Wing It', part: 'The 1980 Ford Sierra Cosworth', meta: 'Editorial design', kind: 'img', cut: true, src: 'design/wingit-ford.webp',
     text: 'The Sierra Cosworth\'s "snow shovel" spoiler: an outsized piece of 1980s styling that also did real aerodynamic work.' },
@@ -113,4 +111,8 @@ export const design = [
     text: 'The same identity as a soft, wide banner version of the mark.' },
   { title: 'GTR Skyline: Urban Hue Shift', part: 'Color correction', meta: 'Adobe Photoshop · color correction', kind: 'img', src: 'design/gtr-hue-shift.webp',
     text: 'Recoloring a Skyline GTR so it belongs to the city behind it, using Hue/Saturation and Curves with a palette pulled from the scene.' },
+  { title: 'The Porsche Experience', part: 'Garage screen', meta: 'GUI design · game start screen', kind: 'img', src: 'design/porsche-garage.webp',
+    text: 'A start screen for a game called The Porsche Experience: a garage to browse and pick cars, a workshop for colors and stats, menus for the store, maps and career, a social hub with multiplayer, inbox and a music player, and a push-to-start button.' },
+  { title: 'Shapes', part: 'Final animation', meta: 'Autodesk Maya · 3D animation', kind: 'video', src: 'design/maya-shapes.mp4', poster: 'design/maya-shapes.webp',
+    text: 'A 3D animation built from simple shapes: a globe made of cubes with a ring around it, a wall of blocks that collapses, and a tunnel of tiles that closes on a thank-you. Excerpts, muted.' },
 ].map((d, i) => ({ ...d, n: String(i + 1).padStart(2, '0') }));
