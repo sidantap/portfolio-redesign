@@ -55,9 +55,10 @@ const pad = (n) => String(n).padStart(2, '0');
   /* cut-out artwork sits straight on the page, no box */
   .frame.cut { background: none; border: 0; }
   .frame.cut img { filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18)); }
-  /* at night the dark lettering in the art needs light behind it: a soft glow, not a box */
+  /* at night the dark lettering in the art needs light behind it */
   .frame.cut { overflow: visible; }
-  .frame.cut::before { content: ''; position: absolute; inset: -9% -8%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.4s; background: radial-gradient(closest-side, rgba(246, 238, 233, 0.94) 0%, rgba(246, 238, 233, 0.86) 55%, rgba(246, 238, 233, 0) 100%); }
+  /* night: a plain, evenly lit paper card behind the art (no glow, no vignette) */
+  .frame.cut::before { content: ''; position: absolute; inset: -2.5%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.4s; border-radius: 14px; background: #f3ece8; }
   .frame.cut img { position: relative; }
   :global(html[data-mode='night']) .frame.cut::before { opacity: 1; }
   :global(html[data-mode='night']) .frame.cut img { filter: none; }
