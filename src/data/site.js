@@ -24,7 +24,7 @@ export const experience = [
   {
     when: '02/2026–Current', role: 'Data Analytics Engineer',
     logo: { text: 'NKWD', label: 'Northern Kentucky Water District' }, org: 'Northern Kentucky Water District · Erlanger, KY',
-    text: 'Medallion (bronze, silver, gold) pipelines on Azure Databricks with PySpark and Delta Lake, loading raw data incrementally and modeling gold facts and dimensions with SCD Type 1 and 2. Config-driven ingestion from SQL Server sources (CIS, Lucity, LIMS, Antero) and REST APIs (Paycor, KnowBe4, CivicPlus, ServiceDesk Plus), orchestrated with Azure Data Factory, ADLS Gen2 and Key Vault and shipped through Azure DevOps CI/CD with pytest, black and pylint. Built 10–20 Power BI reports for seven departments and migrated 40–50 Crystal Reports, saving 20–40 staff hours a week.',
+    text: 'Medallion (bronze, silver, gold) pipelines on Azure Databricks with PySpark and Delta Lake, loading raw data incrementally and modeling gold facts and dimensions with SCD Type 1 and 2. Metadata-driven, idempotent ingestion from operational databases and SaaS APIs, orchestrated with Azure Data Factory, ADLS Gen2 and Key Vault and shipped through Azure DevOps CI/CD with automated tests and code-quality checks. Built 10–20 Power BI reports for seven departments and migrated 40–50 Crystal Reports, saving 20–40 staff hours a week.',
     links: [{ t: 'Lakehouse', post: 'projects/databricks-lakehouse/' }],
   },
   {
@@ -103,10 +103,8 @@ export const design = [
     text: 'A start screen for a game called The Porsche Experience: a garage to browse and pick cars, a workshop for colors and stats, menus for the store, maps and career, a social hub with multiplayer, inbox and a music player, and a push-to-start button.' },
   { title: 'Shapes', part: 'Final animation', meta: 'Autodesk Maya · 3D animation', kind: 'video', src: 'design/maya-shapes.mp4', poster: 'design/maya-shapes.webp',
     text: 'A 3D animation built from simple shapes: a globe made of cubes with a ring around it, a wall of blocks that collapses, and a tunnel of tiles that closes on a thank-you. Excerpts, muted.' },
-  { title: 'DFX 394 final project', part: 'Short film', meta: 'Video · compositing · with sound', kind: 'film', src: 'design/dfx394-final.mp4', poster: 'design/dfx394-final.webp',
-    text: 'A short film for DFX 394: an action figure composited into a night ride, a crash and painted city scenes, with animated lyric captions. The full film, with sound: press play.' },
-  { title: 'Wing It', part: 'Evolution of the spoiler', meta: 'Editorial design', kind: 'img', cut: true, src: 'design/wingit-evolution.webp',
-    text: 'A visual history of classic car spoilers, from the towering wing of the 1970 Plymouth Superbird, built for NASCAR stability, to the 1980s Porsche 911 and its "whale-tail".' },
+  { title: 'DFX 394 final project', part: 'Stop-motion short film', meta: 'Stop-motion · compositing · with sound', kind: 'film', src: 'design/dfx394-final.mp4', poster: 'design/dfx394-final.webp',
+    text: 'A stop-motion short for DFX 394. An action figure is posed and shot frame by frame, a fraction of a movement at a time, so it seems to move on its own when the frames play back. Those shots are then composited into a night ride, a crash and painted city scenes, cut to music with animated lyric captions. The full film, with sound: press play.' },
   { title: 'Wing It', part: 'The 1980 Ford Sierra Cosworth', meta: 'Editorial design', kind: 'img', cut: true, src: 'design/wingit-ford.webp',
     text: 'The Sierra Cosworth\'s "snow shovel" spoiler: an outsized piece of 1980s styling that also did real aerodynamic work.' },
   { title: 'Humble Beginnings', part: 'Logo', meta: 'Brand identity · logo design', kind: 'img', cut: true, src: 'design/humble-logo.webp',

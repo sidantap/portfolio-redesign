@@ -276,12 +276,12 @@ def comply_draw():
 def lakehouse_config():
     w, h = 1180, 470
     body = head('Adding a table is a config entry, not new code', 'metadata-driven ingestion · illustrative config: names and keys are made up, the pattern is real')
-    code = ['{', '  "source": "lucity",', '  "table": "work_orders",', '  "load": "incremental",', '  "watermark": "modified_at",',
+    code = ['{', '  "source": "ops_db",', '  "table": "work_orders",', '  "load": "incremental",', '  "watermark": "modified_at",',
             '  "keys": ["work_order_id"],', '  "silver": {', '    "dedupe_on": ["work_order_id"],', '    "schema": "work_orders.json"',
             '  },', '  "gold": { "scd": 2,', '            "track": ["status", "asset_id"] }', '}']
     cx, cy, cwid = 40, 92, 440
     body += f'<rect x="{cx}" y="{cy}" width="{cwid}" height="{len(code) * 22 + 34}" rx="8" fill="{CODE_BG}"/>'
-    body += T(cx + 16, cy + 22, 'pipelines/lucity/work_orders.json', 10.5, '#bfa79c', MONO)
+    body += T(cx + 16, cy + 22, 'pipelines/ops_db/work_orders.json', 10.5, '#bfa79c', MONO)
     for i, ln in enumerate(code):
         y = cy + 50 + i * 22
         if ':' in ln and '"' in ln.split(':')[0]:
@@ -289,8 +289,8 @@ def lakehouse_config():
             body += f'<text x="{cx + 16}" y="{y}" font-family="{MONO}" font-size="12.5" xml:space="preserve"><tspan fill="#f0a77a">{escape(k)}</tspan><tspan fill="{CODE_INK}">:{escape(v)}</tspan></text>'
         else:
             body += f'<text x="{cx + 16}" y="{y}" font-family="{MONO}" font-size="12.5" fill="{CODE_INK}" xml:space="preserve">{escape(ln)}</text>'
-    steps = [('Data Factory reads the config', 'one generic pipeline for every SQL Server table', SLATE, SERIF),
-             ('bronze.lucity_work_orders', 'rows newer than modified_at, appended as Delta', FAINT, MONO),
+    steps = [('The orchestrator reads the config', 'one generic pipeline for every relational table', SLATE, SERIF),
+             ('bronze.ops_db_work_orders', 'rows newer than modified_at, appended as Delta', FAINT, MONO),
              ('silver.work_orders', 'typed, deduplicated on work_order_id', SLATE, MONO),
              ('gold.dim_work_order', 'SCD 2 on status and asset_id', EMBER, MONO)]
     sx = 560

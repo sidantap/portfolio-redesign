@@ -2,7 +2,7 @@
 layout: ../../layouts/Project.astro
 title: comply., a system of record for DOT drug and alcohol testing
 kind: Product engineering
-org: My startup
+org: Personal project
 date: '2026-11'
 period: 2026 – now
 summary: Employers that run DOT random testing often keep the pool in spreadsheets and send it to an outside administrator they can't see into. comply. keeps the whole program in one record, from the HR system to the inspector.
