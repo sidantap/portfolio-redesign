@@ -58,12 +58,22 @@ const icon = { github: '<>', linkedin: 'in', comply: 'c.', email: '@', resume: '
     <section class="sec">
       <div class="sec-h"><span class="label">Digital design</span><a class="more" href={base + 'design/'}>All design →</a></div>
       <div class="tiles">
-        {design.slice(0, 4).map((d) => <a class="tile" href={base + 'design/'} style="text-decoration:none"><span><b>{d.n}</b>Your design work</span></a>)}
+        {[0, 2, 4, 6].map((k) => design[k]).map((d) => (
+          <a class="dtile" href={base + 'design/#' + d.n}>
+            <img src={base + (d.poster || d.src)} alt="" loading="lazy" />
+            <span class="meta">{d.title}{d.kind === 'video' ? ' · video' : ''}</span>
+          </a>
+        ))}
       </div>
     </section>
   </div></main>
 
 <style is:global>
+  .dtile { display: grid; gap: 8px; text-decoration: none; }
+  .dtile img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #f6f3ee; border: 1px solid var(--line); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .dtile:hover img { transform: translateY(-3px); }
+  .dtile .meta { text-transform: uppercase; letter-spacing: 0.14em; }
+  .dtile:hover .meta { color: var(--accent); }
   main .rows:not(.links) .row { grid-template-columns: 130px minmax(0, 1fr) auto; }
   @media (max-width: 640px) { main .rows:not(.links) .row { grid-template-columns: 1fr; } }
 </style>

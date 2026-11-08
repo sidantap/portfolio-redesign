@@ -96,9 +96,25 @@ export const skills = [
   ['AI and ML', 'LLM fine-tuning (GPT-2), NLP, scikit-learn, embeddings, Claude Code and agents'],
 ];
 
-// Placeholders until the real digital design pieces arrive.
-export const design = Array.from({ length: 8 }, (_, i) => ({
-  n: String(i + 1).padStart(2, '0'),
-  title: 'Design piece ' + String(i + 1).padStart(2, '0'),
-  meta: 'Tool · Year',
-}));
+// Digital design work (minor in Digital Design, NKU). Descriptions from Sid's Adobe Portfolio.
+// kind: 'img' or 'video' (muted loop; poster shown until it plays).
+export const design = [
+  { title: 'The Porsche Experience', part: 'Garage screen', meta: 'GUI design · game start screen', kind: 'img', src: 'design/porsche-garage.webp',
+    text: 'A start screen for a game called The Porsche Experience: a garage to browse and pick cars, a workshop for colors and stats, menus for the store, maps and career, a social hub with multiplayer, inbox and a music player, and a push-to-start button.' },
+  { title: 'The Porsche Experience', part: 'Title and push-to-start', meta: 'GUI design · title and button', kind: 'img', src: 'design/porsche-title-button.webp',
+    text: 'The game title stands on the left of the screen; the start button borrows from a real car\'s push-to-start, so the game begins the way a drive does.' },
+  { title: 'Shapes', part: 'Final animation', meta: 'Autodesk Maya · 3D animation', kind: 'video', src: 'design/maya-shapes.mp4', poster: 'design/maya-shapes.webp',
+    text: 'A 3D animation built from simple shapes: a globe made of cubes with a ring around it, a wall of blocks that collapses, and a tunnel of tiles that closes on a thank-you. Excerpts, muted.' },
+  { title: 'DFX 394 final project', part: 'Short film', meta: 'Video · compositing', kind: 'video', src: 'design/dfx394-final.mp4', poster: 'design/dfx394-final.webp',
+    text: 'A short film for DFX 394: an action figure composited into a night ride, a crash and painted city scenes, with animated lyric captions. Excerpt, muted.' },
+  { title: 'Wing It', part: 'Evolution of the spoiler', meta: 'Editorial design', kind: 'img', src: 'design/wingit-evolution.webp',
+    text: 'A visual history of classic car spoilers, from the towering wing of the 1970 Plymouth Superbird, built for NASCAR stability, to the 1980s Porsche 911 and its "whale-tail".' },
+  { title: 'Wing It', part: 'The 1980 Ford Sierra Cosworth', meta: 'Editorial design', kind: 'img', src: 'design/wingit-ford.webp',
+    text: 'The Sierra Cosworth\'s "snow shovel" spoiler: an outsized piece of 1980s styling that also did real aerodynamic work.' },
+  { title: 'Humble Beginnings', part: 'Logo', meta: 'Brand identity · logo design', kind: 'img', src: 'design/humble-logo.webp',
+    text: 'A logo for a personal brand about growth and resilience: every journey starts with a single step. It went from rough sketches to finished marks.' },
+  { title: 'Humble Beginnings', part: 'Banner', meta: 'Brand identity · logo design', kind: 'img', src: 'design/humble-banner.webp',
+    text: 'The same identity as a soft, wide banner version of the mark.' },
+  { title: 'GTR Skyline: Urban Hue Shift', part: 'Color correction', meta: 'Adobe Photoshop · color correction', kind: 'img', src: 'design/gtr-hue-shift.webp',
+    text: 'Recoloring a Skyline GTR so it belongs to the city behind it, using Hue/Saturation and Curves with a palette pulled from the scene.' },
+].map((d, i) => ({ ...d, n: String(i + 1).padStart(2, '0') }));

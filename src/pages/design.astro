@@ -1,67 +1,106 @@
 ---
-// One piece at a time, the next one peeking in at the edge, with ← 01 / 08 → controls.
-// Placeholder frames until the real digital design work arrives.
+// Digital design: one piece at a time, the next one peeking in at the edge, with ← 01 / 09 →.
+// Videos play muted and looped only while their slide is current.
 import Base from '../layouts/Base.astro';
 import { design } from '../data/site.js';
+const base = import.meta.env.BASE_URL;
+const pad = (n) => String(n).padStart(2, '0');
 ---
 <Base title="Digital design · Sidanta Parajuli" active="design">
   <main>
-    <div class="wrap dh" style="max-width:none">
+    <div class="dh">
       <span class="label">Digital design</span>
       <span class="meta right">{design.length} pieces<br />Minor in Digital Design · NKU</span>
     </div>
-    <div class="stage" id="stage" tabindex="0" aria-label="Design pieces, use the arrow keys">
+    <div class="stage" id="stage" aria-roledescription="carousel" aria-label="Design pieces, use the arrow keys">
       <div class="track" id="track">
-        {design.map((d) => (
-          <figure class="slide">
-            <div class="frame"><span><b>{d.n}</b>Your design piece goes here</span></div>
+        {design.map((d, i) => (
+          <figure class="slide" aria-label={`${d.title}, ${d.part}`}>
+            <div class="frame">
+              {d.kind === 'video'
+                ? <video data-src={base + d.src} poster={base + d.poster} muted loop playsinline preload="none" aria-label={d.title}><source data-src={base + d.src.replace('.mp4', '.webm')} type="video/webm" /><source data-src={base + d.src} type="video/mp4" /></video>
+                : <img src={base + d.src} alt={`${d.title}: ${d.part}`} loading={i < 2 ? 'eager' : 'lazy'} />}
+              {d.kind === 'video' && <span class="tag-v meta">Video · muted</span>}
+            </div>
           </figure>
         ))}
       </div>
     </div>
-    <div class="wrap ctl" style="max-width:none">
-      <span class="meta"><span class="accent" id="cn">01</span> &nbsp; <span id="ct">{design[0].title}</span> &nbsp; <span id="cm">{design[0].meta}</span></span>
-      <span class="meta nav2"><button id="prev" aria-label="Previous">←</button><span id="pos">01 / {String(design.length).padStart(2, '0')}</span><button id="next" aria-label="Next">→</button></span>
+    <div class="ctl">
+      <div class="info">
+        <p class="meta line"><span class="accent" id="cn">01</span> &nbsp; <span id="cm">{design[0].meta}</span></p>
+        <h1 id="ct">{design[0].title}<span class="part" id="cp"> · {design[0].part}</span></h1>
+        <p class="txt" id="cx">{design[0].text}</p>
+      </div>
+      <span class="meta nav2"><button id="prev" aria-label="Previous piece">←</button><span id="pos">01 / {pad(design.length)}</span><button id="next" aria-label="Next piece">→</button></span>
     </div>
   </main>
   <script type="application/json" id="dd" set:html={JSON.stringify(design)} />
 </Base>
 
 <style>
-  .dh { display: flex; justify-content: space-between; align-items: start; padding-top: 34px; padding-left: clamp(20px, 5vw, 72px); padding-right: clamp(20px, 5vw, 72px); }
+  .dh { display: flex; justify-content: space-between; align-items: start; padding: 34px clamp(20px, 5vw, 72px) 0; }
   .right { text-align: right; text-transform: uppercase; letter-spacing: 0.16em; }
-  .stage { overflow: hidden; margin-top: 40px; outline: none; }
-  .track { display: flex; gap: 6vw; padding-left: 21vw; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
-  .slide { flex: 0 0 58vw; margin: 0; transition: opacity 0.4s, transform 0.6s; }
-  .slide:not(.on) { opacity: 0.35; transform: scale(0.88); }
-  .frame { aspect-ratio: 16 / 9; border: 1px dashed var(--line2); background: color-mix(in srgb, var(--lily) 6%, transparent); display: grid; place-items: center; text-align: center; font: 400 0.7rem/1.7 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
-  .frame b { display: block; font: 300 3rem var(--serif); color: var(--lily); letter-spacing: 0; }
-  .ctl { display: flex; justify-content: space-between; gap: 16px; padding-top: 30px; padding-left: clamp(20px, 5vw, 72px); padding-right: clamp(20px, 5vw, 72px); text-transform: uppercase; letter-spacing: 0.16em; }
+  .stage { overflow: hidden; margin-top: 34px; }
+  .track { display: flex; gap: 5vw; padding-left: 19vw; transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .slide { flex: 0 0 62vw; margin: 0; cursor: pointer; transition: opacity 0.45s, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .slide.on { cursor: default; }
+  .slide:not(.on) { opacity: 0.3; transform: scale(0.9); }
+  .frame { position: relative; aspect-ratio: 16 / 9; background: #f6f3ee; border: 1px solid var(--line); overflow: hidden; }
+  .frame img, .frame video { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .frame video { background: #000; object-fit: cover; }
+  .tag-v { position: absolute; left: 12px; bottom: 10px; color: #fff; background: rgba(0, 0, 0, 0.45); padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.6rem; }
+  .ctl { display: flex; justify-content: space-between; align-items: start; gap: 24px; padding: 26px clamp(20px, 5vw, 72px) 0 19vw; }
+  .info { max-width: 62vw; min-height: 150px; }
+  .line { text-transform: uppercase; letter-spacing: 0.16em; margin: 0; }
   .accent { color: var(--accent); }
-  .nav2 { display: flex; gap: 18px; align-items: center; }
-  .nav2 button { background: none; border: 0; color: var(--soft); font: inherit; cursor: pointer; padding: 4px; }
+  .info h1 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin: 8px 0 8px; }
+  .part { color: var(--soft); font-style: italic; font-weight: 300; }
+  .txt { margin: 0; color: var(--soft); max-width: 62ch; line-height: 1.7; }
+  .nav2 { display: flex; gap: 18px; align-items: center; text-transform: uppercase; letter-spacing: 0.16em; white-space: nowrap; padding-top: 2px; }
+  .nav2 button { background: none; border: 0; color: var(--soft); font: inherit; font-size: 0.9rem; cursor: pointer; padding: 4px 6px; }
   .nav2 button:hover { color: var(--accent); }
-  @media (max-width: 640px) { .track { padding-left: 8vw; gap: 4vw; } .slide { flex-basis: 84vw; } }
+  @media (max-width: 760px) {
+    .track { padding-left: 6vw; gap: 4vw; }
+    .slide { flex-basis: 88vw; }
+    .ctl { flex-direction: column-reverse; padding-left: 6vw; padding-right: 6vw; gap: 14px; }
+    .info { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .track, .slide { transition: none; } }
 </style>
 
 <script is:inline>
 (function () {
   var data = JSON.parse(document.getElementById('dd').textContent), i = 0, n = data.length;
   var track = document.getElementById('track'), slides = track.children;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function pad(x) { return String(x).padStart(2, '0'); }
   function go(k) {
     i = (k + n) % n;
-    var w = slides[0].getBoundingClientRect().width, gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-    track.style.transform = 'translateX(' + -(i * (w + gap)) + 'px)';
-    [].forEach.call(slides, function (s, j) { s.classList.toggle('on', j === i); });
-    document.getElementById('cn').textContent = data[i].n; document.getElementById('ct').textContent = data[i].title;
-    document.getElementById('cm').textContent = data[i].meta; document.getElementById('pos').textContent = pad(i + 1) + ' / ' + pad(n);
+    var w = slides[0].getBoundingClientRect().width / (slides[0].classList.contains('on') ? 1 : 0.9);
+    var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    track.style.transform = 'translateX(' + -(i * (slides[0].offsetWidth + gap)) + 'px)';
+    [].forEach.call(slides, function (s, j) {
+      s.classList.toggle('on', j === i);
+      var v = s.querySelector('video'); if (!v) return;
+      if (j === i) {
+        if (!v.dataset.loaded) { v.querySelectorAll('source').forEach(function (so) { so.src = so.dataset.src; }); v.dataset.loaded = '1'; v.load(); }
+        if (reduce) v.controls = true; else v.play().catch(function () { v.controls = true; });
+      } else v.pause();
+    });
+    var d = data[i];
+    document.getElementById('cn').textContent = d.n; document.getElementById('cm').textContent = d.meta;
+    document.getElementById('ct').firstChild.textContent = d.title; document.getElementById('cp').textContent = ' · ' + d.part;
+    document.getElementById('cx').textContent = d.text; document.getElementById('pos').textContent = pad(i + 1) + ' / ' + pad(n);
+    try { history.replaceState(null, '', '#' + d.n); } catch (e) {}
   }
   document.getElementById('prev').onclick = function () { go(i - 1); };
   document.getElementById('next').onclick = function () { go(i + 1); };
-  [].forEach.call(slides, function (s, j) { s.addEventListener('click', function () { go(j); }); });
+  [].forEach.call(slides, function (s, j) { s.addEventListener('click', function () { if (j !== i) go(j); }); });
   addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') go(i + 1); if (e.key === 'ArrowLeft') go(i - 1); });
+  var tx = null; track.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) go(i + (dx < 0 ? 1 : -1)); tx = null; });
   addEventListener('resize', function () { go(i); });
-  go(0);
+  var start = parseInt(location.hash.slice(1), 10); go(start >= 1 && start <= n ? start - 1 : 0);
 })();
 </script>

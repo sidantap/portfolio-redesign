@@ -9,7 +9,7 @@ Each project gets its own kind of figure, chosen for what that project is about:
   nurse         one post's path through the NLP pipeline
   chatbot       anatomy of a training sample
   clinical map  world map of study sites (illustrative)
-  motus         profitability KPI tree · forecast with an uncertainty band (illustrative)
+  motus         profitability KPI tree (the dashboards themselves are real screenshots in public/img)
   vidvo         figures live in scripts/figures_vidvo.py
 Illustrative figures say so on the figure. Figures carry their own paper background so they
 read the same in night and day.  Re-run with:  python3 scripts/figures.py
@@ -517,6 +517,6 @@ if __name__ == '__main__':
     for f in os.listdir(OUT):
         if f.endswith('.svg') and not f.startswith('vidvo-'): os.remove(os.path.join(OUT, f))
     for fn in (nightly_lineage, nightly_windows, nightly_requests, nightly_accuracy, nightly_f1, comply_states, comply_draw,
-               lakehouse_config, lakehouse_scd2, faa_funnel, cargo_trend, nurse_walk, chatbot_sample, clinical_world, motus_tree, motus_forecast):
+               lakehouse_config, lakehouse_scd2, faa_funnel, cargo_trend, nurse_walk, chatbot_sample, clinical_world, motus_tree):
         fn()
     print('wrote', sorted(os.listdir(OUT)))
