@@ -1,84 +1,90 @@
 ---
 layout: ../../layouts/Project.astro
-title: A lakehouse built only from open tools
+title: An open-source lakehouse for US flight data
 kind: Data engineering
 org: Personal · open source
 date: '2026-11'
 period: Nov 2026
-summary: The medallion pattern I run on Databricks at work, rebuilt from open parts (Apache Iceberg tables, DuckDB, Dagster and a YAML data contract) and loaded with 3.4 million US flights from the Bureau of Transportation Statistics.
-impact: Six months of flights (3,446,675 rows) downloaded, validated and modeled in about two minutes on a laptop; the contract caught one real error in the government data
+summary: My work lakehouse runs on Databricks. I rebuilt the same bronze, silver and gold pattern with open-source tools (Apache Iceberg, DuckDB and Dagster), loaded six months of US flight data into it, and built a five-page operations report on top.
+impact: 3,446,676 flights downloaded, loaded and checked in 2 minutes 16 seconds; one bad row caught and quarantined, and every load reconciled
 img: img/open-lakehouse.jpg
-tags: [apache iceberg, medallion architecture, data contracts, data quarantine, schema drift, schema evolution, idempotent loads, time travel, scd type 2, star schema, reconciliation, duckdb, dagster, docker, pytest, python]
+tags: [apache iceberg, duckdb, dagster, data contracts, medallion architecture, data quarantine, schema evolution, scd type 2, star schema, audit logging, echarts, python, sql, docker, pytest]
 links:
   - { t: Live report, href: 'https://sidantap.github.io/portfolio-redesign/lakehouse/' }
   - { t: Code and README, href: 'https://github.com/sidantap/open-lakehouse' }
 ---
 
-At work the lakehouse is a vendor platform: the table format, the catalog and the scheduler come in one box. I wanted to know I understood the pattern and not just the product, so I built it again from parts anyone can install, and gave it real, public data: every scheduled US domestic flight from the Bureau of Transportation Statistics (BTS).
+At work our lakehouse runs on Databricks, which handles the table format, the catalog and the scheduler for you. I wanted to check that I understood the pattern itself and not just the product, so I rebuilt it from open-source parts and fed it public data: every scheduled domestic flight that US airlines report to the Bureau of Transportation Statistics (BTS). Six months of 2025 comes to 3.45 million rows.
 
-<figure><img src="../../fig/open-lakehouse-architecture.svg" alt="BTS monthly zips land once, then load into bronze, silver and gold Iceberg tables; DuckDB runs the SQL, a YAML data contract checks silver, and Dagster orchestrates everything by month" /><figcaption>Fig. 1 · From a monthly zip to a star schema</figcaption></figure>
+## How it's built
 
-## The contract is the schema
+<figure><img src="../../fig/open-lakehouse-architecture.svg" alt="Data flow: BTS zip files land once, load to a bronze Iceberg table, are checked against a data contract into silver with a quarantine table, then modeled into a gold star schema, marts and report tables" /><figcaption>Fig. 1 · Data flow, one partition per month</figcaption></figure>
 
-Most pipelines keep the schema in one place, the quality checks in another and the documentation in a third, and the three slowly disagree. Here a single YAML file declares every silver column: where it comes from, its type, whether it's required, its range or pattern. It also holds rules that span columns:
+| Layer | What it holds | How it loads |
+|---|---|---|
+| Landing | The monthly zip from BTS and a manifest (URL, size, SHA-256, download time) | Downloaded once, never changed |
+| Bronze | All 110 columns as text, plus the source month, row number and batch id | Overwrites its own month only |
+| Silver | The 38 contract columns, typed, plus a few derived ones (47 in all); a quarantine table for rows that failed | Same: one month at a time |
+| Gold | Fact and dimension tables, marts, and three summary tables for the report | Rebuilt from silver each run (about 4 s) |
+| Ops | `ops.load_audit`: one row per stage, per month, per run | Appended, including failures |
 
-```yaml
-- name: delay_causes_add_up
-  # causes, when reported, sum to
-  # the minutes the flight was late
-  sql: >-
-    carrier_delay_min IS NULL OR
-    carrier_delay_min
-      + weather_delay_min
-      + nas_delay_min
-      + security_delay_min
-      + late_aircraft_delay_min
-      = arr_delay_late_min
-```
+The tables are Apache Iceberg (Parquet files plus metadata), so every load is a snapshot I can query later. DuckDB runs all the SQL, and Dagster schedules the loads with one partition per month.
 
-A small compiler turns the file into one DuckDB query that types each column and attaches to every row the list of checks it failed: 98 checks in all. An empty list means the row goes to silver. Anything else goes to **quarantine**, with the names of the failed checks and the raw values exactly as they arrived. Nothing is dropped and nothing is quietly "fixed".
+## The data contract
 
-## What it caught
+The silver table is defined in one YAML file. For each column it lists the source column, the type and any limits; then come a few rules that span columns, such as "a cancelled flight has a cancellation reason" and "when BTS reports delay causes, they add up to the minutes the flight was late". A small compiler turns the file into one DuckDB query with 98 named checks, plus a duplicate-key check.
 
-Six months, 3,446,676 rows, one rejection, and it was real:
+A row that fails any check isn't dropped or fixed. It goes to a quarantine table with the names of the checks it failed and its raw values. Every month has to reconcile (bronze rows = silver rows + quarantined rows), and if more than 0.5% of a month fails, nothing is written and the run stops.
+
+Real BTS data turned out to be very clean. In six months the contract rejected one row:
 
 | | |
 |---|---|
-| Flight | PSA Airlines 5292, Charlotte → Knoxville, March 30, 2025 |
+| Flight | PSA Airlines 5292, Charlotte → Knoxville, 30 March 2025 |
 | Distance | 177 miles |
-| Scheduled | 22:49 → 23:59, about 70 minutes |
-| Reported scheduled duration | **1,510 minutes**, about 25 hours |
+| Scheduled | 22:49 → 23:59 |
+| Scheduled duration in the file | 1,510 minutes (about 25 hours) |
 | Failed check | `max:crs_elapsed_min` |
 
-The flight stays out of every number built on silver, and it's kept for anyone who wants to correct it. If more than 0.5% of a month ever failed, the load would stop before writing anything: that many failures means the source changed, and a person should look before a filter hides it.
+It's almost certainly meant to be 70 minutes, but deciding that isn't the pipeline's job. To check the rules that real data never triggers, the tests feed in 16 kinds of invented bad rows.
 
-## Nothing disappears without a reason
+## The report
 
-Every load has to reconcile: **bronze rows = silver rows + quarantined rows**, and the fact table must hold exactly as many flights as silver. Dagster shows both as checks next to the tables, so a broken join or a bad filter fails the run instead of shrinking a dashboard.
+The report is the part a business user would see. It has five pages: an executive summary with month-on-month changes, carrier performance, airports and routes, delay analysis, and a data operations page. Slicers for month range, carrier, state and airport filter every visual.
 
-Bronze keeps every column as text, because typing belongs in silver under the contract. Bronze refuses only a *file*: one whose header has lost a column the contract needs (schema drift). A file with a *new* column is welcome, and Iceberg evolves the bronze table to hold it while old snapshots stay readable.
+To make filtering work in a static page, gold includes three summary tables that hold only counts and sums, never rates: for example flights, on-time arrivals and delay minutes per month, carrier and airport. The browser adds up whatever the filters select and only then divides. Averaging rates that were already averaged would give the wrong answer; summing counts can't.
 
-## Run it twice, get the same tables
+The data operations page is built from the pipeline's own metadata: the audit table, each Iceberg table's snapshot log, file counts and sizes, and the result of every contract check.
 
-Each month replaces exactly its own partition in one Iceberg transaction. Re-running a month, or loading months out of order, gives identical tables, which makes backfills boring, as they should be. Every load is also a **snapshot**, so the tables can be read as they were at any earlier load:
+## Numbers
 
-```text
-$ lakehouse sql "SELECT count(*)
-    FROM silver_flights" \
-    --at silver.flights=<snapshot>
-1,044,631   # right after February
-```
+<figure><img src="../../fig/open-lakehouse-load-times.svg" alt="Stacked bars of seconds per month: download from BTS between 11 and 19 seconds, bronze and silver about 3 seconds each" /><figcaption>Fig. 2 · Time to land and load each month</figcaption></figure>
 
-## History that changes: SCD Type 2
+The download from BTS is most of the time, and it varies: 11 to 19 seconds a month in this run, up to 38 in an earlier one. Bronze and silver each take about 3 seconds for some 600,000 rows. The timings come from the audit table.
 
-BTS gives each airport a stable ID, but its code, city name and state can change. The airport dimension turns every sighting into versions with `valid_from` and `valid_to` dates (a gaps-and-islands query), and each flight joins to the airport as it was named on its own date. I rebuild it from history instead of merging changes in, so it stays correct when an older month arrives late. The tests check exactly that: they load three months in order and then backfilled, and expect the same versions, with a rename that reverts (A → B → A) becoming three versions, not two.
+<figure><img src="../../fig/open-lakehouse-storage.svg" alt="Horizontal bars: 1,559 MB of CSV, 174 MB zipped, 104 MB bronze, 145 MB silver, 94 MB fact table" /><figcaption>Fig. 3 · The same six months at each stage</figcaption></figure>
 
-## Built to be checked
+I expected silver to be smaller than bronze, and it isn't. When I looked at the Parquet column sizes, a 16-character hash key I'd added to silver took 32 MB on its own, 22% of the table, because random hex doesn't compress. The natural key columns are already in the table, so next time I'd leave the hash out.
 
-- **35 tests**, no network: they write small files in the real BTS layout from made-up flights, covering every kind of contract violation, duplicates, midnight written as `2400`, reloads, time travel, schema drift and the SCD Type 2 versions.
-- **Dagster** runs the same functions as partitioned assets, one partition per month, with a schedule that loads the month BTS has just published.
-- **Docker Compose** starts the Dagster UI, and GitHub Actions lints, tests and builds the image on every push.
+## What the data showed
 
-## What production would change
+<figure><img src="../../fig/open-lakehouse-otp.svg" alt="Line chart of monthly on-time arrival rate for Southwest, Delta, American and SkyWest and all carriers, January to June 2025, all falling in May and June" /><figcaption>Fig. 4 · On-time arrival rate, four largest carriers</figcaption></figure>
 
-The catalog is a SQLite file so the whole thing fits on a laptop. Pointing it at a REST, Glue or Nessie catalog and object storage changes one module, and then Spark, Trino or Snowflake can read the same tables. The patterns stay the same: contract-first silver, quarantine with reasons, partition-scoped idempotent loads and reconciliation on every run.
+Across all 14 carriers, 78.1% of completed flights arrived less than 15 minutes late. That held around 80% from January to April, then dropped to 76.4% in May and 71.7% in June, with every large carrier falling. The carriers ranged from Hawaiian at 84.0% to PSA at 70.1%.
+
+<figure><img src="../../fig/open-lakehouse-delays.svg" alt="Histogram of arrival delay in five-minute bins, peaking just before scheduled time, with a long tail past four hours" /><figcaption>Fig. 5 · Arrival delay of 3.4 million completed flights</figcaption></figure>
+
+Most flights arrive early: schedules are padded. The tail is long, though: 8% of completed flights were an hour or more late. The single biggest cause of delay minutes was a late-arriving aircraft (38%), meaning the delay came from an earlier flight. The report's hour-by-weekday heatmap shows the same knock-on effect: delays build through the day and peak in the evening.
+
+## Problems I hit
+
+- **DuckDB 2.0 broke two things.** The old lambda syntax was deprecated and a function I used was renamed. I pinned the version.
+- **Partitioning by month needed an extra package** (`pyiceberg-core`) before PyIceberg would write.
+- **A replace is two snapshots in PyIceberg**: a delete and then an append, committed together. Readers never see the gap, but it shows up in the history.
+- **0/0 gives NaN in DuckDB, not NULL.** A test with a carrier whose flights were all cancelled caught it.
+- **The airport reference data was ahead of BTS.** OurAirports already lists Palm Beach under its new code (DJT); BTS still reports PBI.
+- **My first timings were wrong.** I recorded durations in snapshot properties, which are set before the write happens, so the write was left out. That's why the audit table exists.
+
+## What I'd change
+
+The SQLite catalog allows one writer at a time; a shared setup would use a REST or Glue catalog with object storage, and only one module would change. Gold is rebuilt in full every run, which takes seconds now but wouldn't with years of data, so the fact table would need to load incrementally. Flight times are local to each airport with no time zones, which is fine for "hour of day" but not for anything that crosses time zones.
