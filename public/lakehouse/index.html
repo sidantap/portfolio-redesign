@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>US Flight Reliability · open-lakehouse</title>
+<meta name="description" content="On-time performance of US airlines, built by an open-source medallion lakehouse: Apache Iceberg, DuckDB, Dagster and data contracts on BTS data.">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f5f1; --surface: #fcfcfb; --line: #e4e2db; --grid: #ecebe5;
+  --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #7a786f;
+  --series: #2a78d6; --series-soft: #cde2fb; --focus: #2a78d6;
+  --s1: #cde2fb; --s2: #9ec5f4; --s3: #6da7ec; --s4: #3987e5; --s5: #256abf; --s6: #184f95; --s7: #0d366b;
+  --bad: #d03b3b;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg: #121211; --surface: #1a1a19; --line: #2e2e2b; --grid: #262624;
+    --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #8f8d84;
+    --series: #3987e5; --series-soft: #184f95; --focus: #6da7ec;
+    --s1: #104281; --s2: #184f95; --s3: #256abf; --s4: #2a78d6; --s5: #5598e7; --s6: #86b6ef; --s7: #cde2fb;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface: #1a1a19; --line: #2e2e2b; --grid: #262624;
+  --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #8f8d84;
+  --series: #3987e5; --series-soft: #184f95; --focus: #6da7ec;
+  --s1: #104281; --s2: #184f95; --s3: #256abf; --s4: #2a78d6; --s5: #5598e7; --s6: #86b6ef; --s7: #cde2fb;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--sans); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 40px 16px 64px; }
+header { display: grid; gap: 10px; margin-bottom: 28px; }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+h1 { font-size: clamp(28px, 4.4vw, 42px); line-height: 1.1; margin: 0; letter-spacing: -.01em; font-weight: 650; }
+h2 { font-size: 19px; margin: 0; font-weight: 620; }
+.lede { color: var(--ink-2); max-width: 64ch; margin: 0; }
+.meta { font: 12px var(--mono); color: var(--ink-3); }
+a { color: var(--series); }
+.grid { display: grid; gap: 16px; align-items: start; grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; min-width: 0; }
+.span-12 { grid-column: span 12; } .span-7 { grid-column: span 7; } .span-5 { grid-column: span 5; }
+.span-3 { grid-column: span 3; } .span-6 { grid-column: span 6; }
+@media (max-width: 860px) { .span-7, .span-5, .span-6 { grid-column: span 12; } .span-3 { grid-column: span 6; } }
+.card-head { display: grid; gap: 4px; margin-bottom: 14px; }
+.card-head p { margin: 0; color: var(--ink-2); font-size: 14px; }
+.kpi .label { font-size: 13px; color: var(--ink-2); }
+.kpi .value { font-size: clamp(26px, 3.4vw, 34px); font-weight: 650; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.kpi .sub { font-size: 12px; color: var(--ink-3); }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { fill: var(--ink-2); font: 12px var(--sans); font-variant-numeric: tabular-nums; }
+svg .muted { fill: var(--ink-3); }
+svg .strong { fill: var(--ink); font-weight: 600; }
+.gridline { stroke: var(--grid); stroke-width: 1; }
+.axis { stroke: var(--line); stroke-width: 1; }
+.bar { fill: var(--series); }
+.hit { fill: transparent; cursor: default; }
+.hit:hover + .bar, .row:hover .bar { opacity: .82; }
+.line { fill: none; stroke: var(--series); stroke-width: 2; stroke-linejoin: round; }
+.dot { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
+.cell { stroke: var(--surface); stroke-width: 2; }
+.tip { position: fixed; pointer-events: none; z-index: 10; background: var(--ink); color: var(--bg);
+  font-size: 12.5px; line-height: 1.45; padding: 8px 10px; border-radius: 8px; max-width: 260px;
+  opacity: 0; transition: opacity .12s; font-variant-numeric: tabular-nums; }
+.tip.on { opacity: 1; }
+.tip b { font-weight: 600; }
+.legend { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); margin-top: 10px; flex-wrap: wrap; }
+.ramp { display: flex; } .ramp i { width: 22px; height: 10px; display: block; }
+.ramp i:first-child { border-radius: 3px 0 0 3px; } .ramp i:last-child { border-radius: 0 3px 3px 0; }
+details { margin-top: 12px; font-size: 13px; }
+summary { cursor: pointer; color: var(--ink-2); }
+summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+td.num, th.num { text-align: right; }
+.pill { font: 11px var(--mono); padding: 2px 7px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
+.pill.bad { color: var(--bad); border-color: currentColor; }
+pre { margin: 0; font: 12px/1.5 var(--mono); color: var(--ink-2); white-space: pre-wrap; word-break: break-word; }
+.stack { display: grid; gap: 10px; }
+.pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 640px) { .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stage { border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.stage b { display: block; font-size: 14px; }
+.stage span { font-size: 12.5px; color: var(--ink-2); }
+footer { margin-top: 28px; font-size: 13px; color: var(--ink-3); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.theme { font: inherit; background: none; border: 1px solid var(--line); color: var(--ink-2); border-radius: 99px; padding: 3px 10px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">open-lakehouse · gold layer report</span>
+    <h1>How reliable were US airlines?</h1>
+    <p class="lede" id="lede"></p>
+    <span class="meta" id="built"></span>
+  </header>
+
+  <div class="grid">
+    <div class="card kpi span-3"><div class="label">Scheduled flights</div><div class="value" id="k-flights"></div><div class="sub" id="k-flights-sub"></div></div>
+    <div class="card kpi span-3"><div class="label">Arrived on time</div><div class="value" id="k-ontime"></div><div class="sub">within 14 min of schedule</div></div>
+    <div class="card kpi span-3"><div class="label">Cancelled</div><div class="value" id="k-cancel"></div><div class="sub">share of scheduled flights</div></div>
+    <div class="card kpi span-3"><div class="label">Rows quarantined</div><div class="value" id="k-quar"></div><div class="sub" id="k-quar-sub"></div></div>
+
+    <section class="card span-7" aria-labelledby="h-carriers">
+      <div class="card-head"><h2 id="h-carriers">On-time arrival rate by carrier</h2><p>Share of completed flights that arrived less than 15 minutes late.</p></div>
+      <div id="c-carriers"></div>
+      <details><summary>Show as table</summary><div class="scroll" id="t-carriers"></div></details>
+    </section>
+
+    <section class="card span-5" aria-labelledby="h-causes">
+      <div class="card-head"><h2 id="h-causes">Where the delay minutes came from</h2><p>Minutes of arrival delay by cause, for flights 15+ minutes late.</p></div>
+      <div id="c-causes"></div>
+      <details><summary>Show as table</summary><div class="scroll" id="t-causes"></div></details>
+    </section>
+
+    <section class="card span-12" aria-labelledby="h-months">
+      <div class="card-head"><h2 id="h-months">On-time rate by month, all carriers</h2><p>The same definition as above, month by month.</p></div>
+      <div id="c-months"></div>
+      <details><summary>Show as table</summary><div class="scroll" id="t-months"></div></details>
+    </section>
+
+    <section class="card span-12" aria-labelledby="h-heat">
+      <div class="card-head"><h2 id="h-heat">Delays build through the day</h2><p>Share of departures leaving 15+ minutes late, by scheduled hour, at the busiest airports.</p></div>
+      <div class="scroll"><div id="c-heat" style="min-width:640px"></div></div>
+      <div class="legend"><span>Fewer delayed</span><span class="ramp" id="ramp"></span><span>More delayed</span><span id="ramp-range" class="meta"></span></div>
+      <details><summary>Show as table</summary><div class="scroll" id="t-heat"></div></details>
+    </section>
+
+    <section class="card span-12" aria-labelledby="h-routes">
+      <div class="card-head"><h2 id="h-routes">The busiest routes</h2><p>Airport pairs with the most scheduled flights, one direction each.</p></div>
+      <div class="scroll" id="t-routes"></div>
+    </section>
+
+    <section class="card span-6" aria-labelledby="h-pipe">
+      <div class="card-head"><h2 id="h-pipe">How this page was built</h2><p>Every number here comes from the gold layer of an open-source lakehouse.</p></div>
+      <div class="pipeline">
+        <div class="stage"><b>Landing</b><span>Monthly BTS zip, downloaded once, SHA-256 recorded</span></div>
+        <div class="stage"><b>Bronze</b><span>Iceberg, every column as text, one partition per month</span></div>
+        <div class="stage"><b>Silver</b><span id="silver-stage">Typed and validated against a data contract</span></div>
+        <div class="stage"><b>Gold</b><span>Star schema with an SCD Type 2 airport dimension, and marts</span></div>
+      </div>
+      <p class="meta" style="margin:14px 0 0">Apache Iceberg · DuckDB · Dagster · PyIceberg · Python</p>
+    </section>
+
+    <section class="card span-6" aria-labelledby="h-quality">
+      <div class="card-head"><h2 id="h-quality">What the data contract caught</h2><p>Rows that broke a check are kept in quarantine with the reason, never dropped.</p></div>
+      <div class="scroll" id="t-quality"></div>
+      <div class="stack" id="examples" style="margin-top:12px"></div>
+    </section>
+  </div>
+
+  <footer>
+    <span>Data: Bureau of Transportation Statistics, Reporting Carrier On-Time Performance. Built by <a href="https://github.com/sidantap/open-lakehouse">open-lakehouse</a>.</span>
+    <button class="theme" id="theme" type="button">Theme: auto</button>
+  </footer>
+</div>
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script>
+const D = {"totals":{"flights":3446675,"on_time_rate":0.7810537588804137,"cancel_rate":0.014980524708595965,"first_month":"2025-01","last_month":"2025-06","carriers":14},"carriers":[{"carrier_code":"HA","carrier_name":"Hawaiian Airlines","flights":39897,"on_time_rate":0.84,"cancel_rate":0.0091},{"carrier_code":"YX","carrier_name":"Republic Airways","flights":167463,"on_time_rate":0.8016,"cancel_rate":0.0274},{"carrier_code":"WN","carrier_name":"Southwest Airlines","flights":687727,"on_time_rate":0.7985,"cancel_rate":0.0095},{"carrier_code":"NK","carrier_name":"Spirit Airlines","flights":107274,"on_time_rate":0.796,"cancel_rate":0.0141},{"carrier_code":"UA","carrier_name":"United Airlines","flights":385016,"on_time_rate":0.7944,"cancel_rate":0.0075},{"carrier_code":"DL","carrier_name":"Delta Air Lines","flights":497367,"on_time_rate":0.7927,"cancel_rate":0.0099},{"carrier_code":"OO","carrier_name":"SkyWest Airlines","flights":411300,"on_time_rate":0.7909,"cancel_rate":0.013},{"carrier_code":"MQ","carrier_name":"Envoy Air","flights":142631,"on_time_rate":0.7848,"cancel_rate":0.0259},{"carrier_code":"AS","carrier_name":"Alaska Airlines","flights":116755,"on_time_rate":0.7761,"cancel_rate":0.0094},{"carrier_code":"B6","carrier_name":"JetBlue Airways","flights":115525,"on_time_rate":0.7557,"cancel_rate":0.0104},{"carrier_code":"G4","carrier_name":"Allegiant Air","flights":67859,"on_time_rate":0.7543,"cancel_rate":0.0055},{"carrier_code":"AA","carrier_name":"American Airlines","flights":481303,"on_time_rate":0.7531,"cancel_rate":0.0199},{"carrier_code":"F9","carrier_name":"Frontier Airlines","flights":99357,"on_time_rate":0.7147,"cancel_rate":0.0185},{"carrier_code":"OH","carrier_name":"PSA Airlines","flights":127201,"on_time_rate":0.7011,"cancel_rate":0.0603}],"months":[{"year_month":"2025-01","flights":539747,"on_time_rate":0.8121,"cancel_rate":0.0302},{"year_month":"2025-02","flights":504884,"on_time_rate":0.7923,"cancel_rate":0.0147},{"year_month":"2025-03","flights":600871,"on_time_rate":0.8041,"cancel_rate":0.0115},{"year_month":"2025-04","flights":583950,"on_time_rate":0.8034,"cancel_rate":0.0084},{"year_month":"2025-05","flights":605648,"on_time_rate":0.764,"cancel_rate":0.0105},{"year_month":"2025-06","flights":611575,"on_time_rate":0.7174,"cancel_rate":0.0159}],"causes":[{"cause":"Late-arriving aircraft","minutes":20639274},{"cause":"Carrier","minutes":17435974},{"cause":"National Air System","minutes":11979622},{"cause":"Weather","minutes":3643891},{"cause":"Security","minutes":76355}],"airports":["DFW","DEN","ATL","ORD","CLT","PHX","LAS","LAX","MCO","SEA","DCA","BOS"],"heat":[{"origin":"ATL","city":"Atlanta, GA","hour":5,"scheduled":1377,"dep_delayed_rate":0.1319},{"origin":"ATL","city":"Atlanta, GA","hour":6,"scheduled":2434,"dep_delayed_rate":0.1191},{"origin":"ATL","city":"Atlanta, GA","hour":7,"scheduled":7354,"dep_delayed_rate":0.1175},{"origin":"ATL","city":"Atlanta, GA","hour":8,"scheduled":11941,"dep_delayed_rate":0.1312},{"origin":"ATL","city":"Atlanta, GA","hour":9,"scheduled":11042,"dep_delayed_rate":0.1872},{"origin":"ATL","city":"Atlanta, GA","hour":10,"scheduled":9862,"dep_delayed_rate":0.1933},{"origin":"ATL","city":"Atlanta, GA","hour":11,"scheduled":10342,"dep_delayed_rate":0.2015},{"origin":"ATL","city":"Atlanta, GA","hour":12,"scheduled":8711,"dep_delayed_rate":0.2103},{"origin":"ATL","city":"Atlanta, GA","hour":13,"scheduled":7115,"dep_delayed_rate":0.2323},{"origin":"ATL","city":"Atlanta, GA","hour":14,"scheduled":7543,"dep_delayed_rate":0.2599},{"origin":"ATL","city":"Atlanta, GA","hour":15,"scheduled":11073,"dep_delayed_rate":0.2959},{"origin":"ATL","city":"Atlanta, GA","hour":16,"scheduled":9201,"dep_delayed_rate":0.3265},{"origin":"ATL","city":"Atlanta, GA","hour":17,"scheduled":7399,"dep_delayed_rate":0.3191},{"origin":"ATL","city":"Atlanta, GA","hour":18,"scheduled":7476,"dep_delayed_rate":0.3294},{"origin":"ATL","city":"Atlanta, GA","hour":19,"scheduled":10726,"dep_delayed_rate":0.3285},{"origin":"ATL","city":"Atlanta, GA","hour":20,"scheduled":8404,"dep_delayed_rate":0.3558},{"origin":"ATL","city":"Atlanta, GA","hour":21,"scheduled":9308,"dep_delayed_rate":0.329},{"origin":"ATL","city":"Atlanta, GA","hour":22,"scheduled":11048,"dep_delayed_rate":0.3024},{"origin":"ATL","city":"Atlanta, GA","hour":23,"scheduled":1126,"dep_delayed_rate":0.449},{"origin":"BOS","city":"Boston, MA","hour":5,"scheduled":2857,"dep_delayed_rate":0.074},{"origin":"BOS","city":"Boston, MA","hour":6,"scheduled":5630,"dep_delayed_rate":0.0747},{"origin":"BOS","city":"Boston, MA","hour":7,"scheduled":6763,"dep_delayed_rate":0.1067},{"origin":"BOS","city":"Boston, MA","hour":8,"scheduled":5529,"dep_delayed_rate":0.1189},{"origin":"BOS","city":"Boston, MA","hour":9,"scheduled":4533,"dep_delayed_rate":0.1263},{"origin":"BOS","city":"Boston, MA","hour":10,"scheduled":4283,"dep_delayed_rate":0.1582},{"origin":"BOS","city":"Boston, MA","hour":11,"scheduled":4062,"dep_delayed_rate":0.1689},{"origin":"BOS","city":"Boston, MA","hour":12,"scheduled":3534,"dep_delayed_rate":0.1866},{"origin":"BOS","city":"Boston, MA","hour":13,"scheduled":3165,"dep_delayed_rate":0.1859},{"origin":"BOS","city":"Boston, MA","hour":14,"scheduled":3162,"dep_delayed_rate":0.2028},{"origin":"BOS","city":"Boston, MA","hour":15,"scheduled":4488,"dep_delayed_rate":0.2655},{"origin":"BOS","city":"Boston, MA","hour":16,"scheduled":4102,"dep_delayed_rate":0.3168},{"origin":"BOS","city":"Boston, MA","hour":17,"scheduled":4952,"dep_delayed_rate":0.3019},{"origin":"BOS","city":"Boston, MA","hour":18,"scheduled":4429,"dep_delayed_rate":0.3086},{"origin":"BOS","city":"Boston, MA","hour":19,"scheduled":3997,"dep_delayed_rate":0.3377},{"origin":"BOS","city":"Boston, MA","hour":20,"scheduled":3673,"dep_delayed_rate":0.398},{"origin":"BOS","city":"Boston, MA","hour":21,"scheduled":1160,"dep_delayed_rate":0.3563},{"origin":"BOS","city":"Boston, MA","hour":22,"scheduled":290,"dep_delayed_rate":0.2993},{"origin":"CLT","city":"Charlotte, NC","hour":5,"scheduled":368,"dep_delayed_rate":0.0803},{"origin":"CLT","city":"Charlotte, NC","hour":6,"scheduled":1547,"dep_delayed_rate":0.085},{"origin":"CLT","city":"Charlotte, NC","hour":7,"scheduled":7341,"dep_delayed_rate":0.1},{"origin":"CLT","city":"Charlotte, NC","hour":8,"scheduled":3867,"dep_delayed_rate":0.1234},{"origin":"CLT","city":"Charlotte, NC","hour":9,"scheduled":8647,"dep_delayed_rate":0.121},{"origin":"CLT","city":"Charlotte, NC","hour":10,"scheduled":2181,"dep_delayed_rate":0.1881},{"origin":"CLT","city":"Charlotte, NC","hour":11,"scheduled":10524,"dep_delayed_rate":0.1866},{"origin":"CLT","city":"Charlotte, NC","hour":12,"scheduled":1865,"dep_delayed_rate":0.2092},{"origin":"CLT","city":"Charlotte, NC","hour":13,"scheduled":6746,"dep_delayed_rate":0.1979},{"origin":"CLT","city":"Charlotte, NC","hour":14,"scheduled":7489,"dep_delayed_rate":0.2431},{"origin":"CLT","city":"Charlotte, NC","hour":15,"scheduled":4183,"dep_delayed_rate":0.2871},{"origin":"CLT","city":"Charlotte, NC","hour":16,"scheduled":8970,"dep_delayed_rate":0.2803},{"origin":"CLT","city":"Charlotte, NC","hour":17,"scheduled":3364,"dep_delayed_rate":0.3268},{"origin":"CLT","city":"Charlotte, NC","hour":18,"scheduled":9135,"dep_delayed_rate":0.3208},{"origin":"CLT","city":"Charlotte, NC","hour":19,"scheduled":2702,"dep_delayed_rate":0.3453},{"origin":"CLT","city":"Charlotte, NC","hour":20,"scheduled":10325,"dep_delayed_rate":0.3221},{"origin":"CLT","city":"Charlotte, NC","hour":21,"scheduled":2851,"dep_delayed_rate":0.3492},{"origin":"CLT","city":"Charlotte, NC","hour":22,"scheduled":9005,"dep_delayed_rate":0.2987},{"origin":"CLT","city":"Charlotte, NC","hour":23,"scheduled":854,"dep_delayed_rate":0.3013},{"origin":"DCA","city":"Washington, DC","hour":5,"scheduled":558,"dep_delayed_rate":0.0617},{"origin":"DCA","city":"Washington, DC","hour":6,"scheduled":5313,"dep_delayed_rate":0.0769},{"origin":"DCA","city":"Washington, DC","hour":7,"scheduled":4354,"dep_delayed_rate":0.1097},{"origin":"DCA","city":"Washington, DC","hour":8,"scheduled":6167,"dep_delayed_rate":0.1293},{"origin":"DCA","city":"Washington, DC","hour":9,"scheduled":2829,"dep_delayed_rate":0.1823},{"origin":"DCA","city":"Washington, DC","hour":10,"scheduled":5395,"dep_delayed_rate":0.1691},{"origin":"DCA","city":"Washington, DC","hour":11,"scheduled":4311,"dep_delayed_rate":0.1958},{"origin":"DCA","city":"Washington, DC","hour":12,"scheduled":3884,"dep_delayed_rate":0.2333},{"origin":"DCA","city":"Washington, DC","hour":13,"scheduled":4216,"dep_delayed_rate":0.2523},{"origin":"DCA","city":"Washington, DC","hour":14,"scheduled":4788,"dep_delayed_rate":0.2665},{"origin":"DCA","city":"Washington, DC","hour":15,"scheduled":4172,"dep_delayed_rate":0.2985},{"origin":"DCA","city":"Washington, DC","hour":16,"scheduled":3302,"dep_delayed_rate":0.3785},{"origin":"DCA","city":"Washington, DC","hour":17,"scheduled":6230,"dep_delayed_rate":0.3905},{"origin":"DCA","city":"Washington, DC","hour":18,"scheduled":2830,"dep_delayed_rate":0.4097},{"origin":"DCA","city":"Washington, DC","hour":19,"scheduled":5091,"dep_delayed_rate":0.3644},{"origin":"DCA","city":"Washington, DC","hour":20,"scheduled":2983,"dep_delayed_rate":0.3983},{"origin":"DCA","city":"Washington, DC","hour":21,"scheduled":924,"dep_delayed_rate":0.3781},{"origin":"DCA","city":"Washington, DC","hour":22,"scheduled":3860,"dep_delayed_rate":0.4593},{"origin":"DCA","city":"Washington, DC","hour":23,"scheduled":20,"dep_delayed_rate":0.5},{"origin":"DEN","city":"Denver, CO","hour":5,"scheduled":1602,"dep_delayed_rate":0.063},{"origin":"DEN","city":"Denver, CO","hour":6,"scheduled":5004,"dep_delayed_rate":0.0681},{"origin":"DEN","city":"Denver, CO","hour":7,"scheduled":7289,"dep_delayed_rate":0.1079},{"origin":"DEN","city":"Denver, CO","hour":8,"scheduled":8625,"dep_delayed_rate":0.1228},{"origin":"DEN","city":"Denver, CO","hour":9,"scheduled":11754,"dep_delayed_rate":0.1634},{"origin":"DEN","city":"Denver, CO","hour":10,"scheduled":9623,"dep_delayed_rate":0.1989},{"origin":"DEN","city":"Denver, CO","hour":11,"scheduled":15215,"dep_delayed_rate":0.2208},{"origin":"DEN","city":"Denver, CO","hour":12,"scheduled":5402,"dep_delayed_rate":0.2488},{"origin":"DEN","city":"Denver, CO","hour":13,"scheduled":14274,"dep_delayed_rate":0.2158},{"origin":"DEN","city":"Denver, CO","hour":14,"scheduled":5500,"dep_delayed_rate":0.3106},{"origin":"DEN","city":"Denver, CO","hour":15,"scheduled":7732,"dep_delayed_rate":0.2794},{"origin":"DEN","city":"Denver, CO","hour":16,"scheduled":7310,"dep_delayed_rate":0.3071},{"origin":"DEN","city":"Denver, CO","hour":17,"scheduled":15381,"dep_delayed_rate":0.3393},{"origin":"DEN","city":"Denver, CO","hour":18,"scheduled":5585,"dep_delayed_rate":0.4145},{"origin":"DEN","city":"Denver, CO","hour":19,"scheduled":13489,"dep_delayed_rate":0.4016},{"origin":"DEN","city":"Denver, CO","hour":20,"scheduled":9194,"dep_delayed_rate":0.3569},{"origin":"DEN","city":"Denver, CO","hour":21,"scheduled":6086,"dep_delayed_rate":0.3841},{"origin":"DEN","city":"Denver, CO","hour":22,"scheduled":2651,"dep_delayed_rate":0.4141},{"origin":"DEN","city":"Denver, CO","hour":23,"scheduled":2253,"dep_delayed_rate":0.2403},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":5,"scheduled":2061,"dep_delayed_rate":0.0886},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":6,"scheduled":2240,"dep_delayed_rate":0.123},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":7,"scheduled":10106,"dep_delayed_rate":0.1469},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":8,"scheduled":15211,"dep_delayed_rate":0.1674},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":9,"scheduled":5482,"dep_delayed_rate":0.221},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":10,"scheduled":12494,"dep_delayed_rate":0.22},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":11,"scheduled":6819,"dep_delayed_rate":0.2954},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":12,"scheduled":12057,"dep_delayed_rate":0.2432},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":13,"scheduled":5862,"dep_delayed_rate":0.3112},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":14,"scheduled":10658,"dep_delayed_rate":0.2905},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":15,"scheduled":7475,"dep_delayed_rate":0.3514},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":16,"scheduled":10473,"dep_delayed_rate":0.3159},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":17,"scheduled":8307,"dep_delayed_rate":0.3551},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":18,"scheduled":9830,"dep_delayed_rate":0.3768},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":19,"scheduled":12205,"dep_delayed_rate":0.3764},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":20,"scheduled":8043,"dep_delayed_rate":0.3909},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":21,"scheduled":10050,"dep_delayed_rate":0.3153},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":22,"scheduled":6638,"dep_delayed_rate":0.3742},{"origin":"DFW","city":"Dallas/Fort Worth, TX","hour":23,"scheduled":168,"dep_delayed_rate":0.4364},{"origin":"LAS","city":"Las Vegas, NV","hour":5,"scheduled":1900,"dep_delayed_rate":0.0551},{"origin":"LAS","city":"Las Vegas, NV","hour":6,"scheduled":6913,"dep_delayed_rate":0.0626},{"origin":"LAS","city":"Las Vegas, NV","hour":7,"scheduled":6027,"dep_delayed_rate":0.0882},{"origin":"LAS","city":"Las Vegas, NV","hour":8,"scheduled":6346,"dep_delayed_rate":0.118},{"origin":"LAS","city":"Las Vegas, NV","hour":9,"scheduled":6381,"dep_delayed_rate":0.1427},{"origin":"LAS","city":"Las Vegas, NV","hour":10,"scheduled":6330,"dep_delayed_rate":0.1677},{"origin":"LAS","city":"Las Vegas, NV","hour":11,"scheduled":5028,"dep_delayed_rate":0.2004},{"origin":"LAS","city":"Las Vegas, NV","hour":12,"scheduled":5762,"dep_delayed_rate":0.232},{"origin":"LAS","city":"Las Vegas, NV","hour":13,"scheduled":5212,"dep_delayed_rate":0.245},{"origin":"LAS","city":"Las Vegas, NV","hour":14,"scheduled":5213,"dep_delayed_rate":0.2782},{"origin":"LAS","city":"Las Vegas, NV","hour":15,"scheduled":5287,"dep_delayed_rate":0.3201},{"origin":"LAS","city":"Las Vegas, NV","hour":16,"scheduled":4379,"dep_delayed_rate":0.304},{"origin":"LAS","city":"Las Vegas, NV","hour":17,"scheduled":5669,"dep_delayed_rate":0.3311},{"origin":"LAS","city":"Las Vegas, NV","hour":18,"scheduled":4512,"dep_delayed_rate":0.3461},{"origin":"LAS","city":"Las Vegas, NV","hour":19,"scheduled":4355,"dep_delayed_rate":0.3228},{"origin":"LAS","city":"Las Vegas, NV","hour":20,"scheduled":3368,"dep_delayed_rate":0.3144},{"origin":"LAS","city":"Las Vegas, NV","hour":21,"scheduled":3234,"dep_delayed_rate":0.3186},{"origin":"LAS","city":"Las Vegas, NV","hour":22,"scheduled":3050,"dep_delayed_rate":0.2536},{"origin":"LAS","city":"Las Vegas, NV","hour":23,"scheduled":3629,"dep_delayed_rate":0.1967},{"origin":"LAX","city":"Los Angeles, CA","hour":5,"scheduled":1867,"dep_delayed_rate":0.0538},{"origin":"LAX","city":"Los Angeles, CA","hour":6,"scheduled":4861,"dep_delayed_rate":0.0694},{"origin":"LAX","city":"Los Angeles, CA","hour":7,"scheduled":5659,"dep_delayed_rate":0.0932},{"origin":"LAX","city":"Los Angeles, CA","hour":8,"scheduled":8798,"dep_delayed_rate":0.1099},{"origin":"LAX","city":"Los Angeles, CA","hour":9,"scheduled":8177,"dep_delayed_rate":0.1366},{"origin":"LAX","city":"Los Angeles, CA","hour":10,"scheduled":5680,"dep_delayed_rate":0.1573},{"origin":"LAX","city":"Los Angeles, CA","hour":11,"scheduled":5317,"dep_delayed_rate":0.182},{"origin":"LAX","city":"Los Angeles, CA","hour":12,"scheduled":4641,"dep_delayed_rate":0.1971},{"origin":"LAX","city":"Los Angeles, CA","hour":13,"scheduled":5786,"dep_delayed_rate":0.1922},{"origin":"LAX","city":"Los Angeles, CA","hour":14,"scheduled":4378,"dep_delayed_rate":0.2304},{"origin":"LAX","city":"Los Angeles, CA","hour":15,"scheduled":4362,"dep_delayed_rate":0.2142},{"origin":"LAX","city":"Los Angeles, CA","hour":16,"scheduled":4625,"dep_delayed_rate":0.1883},{"origin":"LAX","city":"Los Angeles, CA","hour":17,"scheduled":4442,"dep_delayed_rate":0.1954},{"origin":"LAX","city":"Los Angeles, CA","hour":18,"scheduled":4662,"dep_delayed_rate":0.2271},{"origin":"LAX","city":"Los Angeles, CA","hour":19,"scheduled":5539,"dep_delayed_rate":0.1901},{"origin":"LAX","city":"Los Angeles, CA","hour":20,"scheduled":2753,"dep_delayed_rate":0.2517},{"origin":"LAX","city":"Los Angeles, CA","hour":21,"scheduled":4100,"dep_delayed_rate":0.1851},{"origin":"LAX","city":"Los Angeles, CA","hour":22,"scheduled":4013,"dep_delayed_rate":0.177},{"origin":"LAX","city":"Los Angeles, CA","hour":23,"scheduled":3482,"dep_delayed_rate":0.1813},{"origin":"MCO","city":"Orlando, FL","hour":5,"scheduled":1772,"dep_delayed_rate":0.0742},{"origin":"MCO","city":"Orlando, FL","hour":6,"scheduled":5701,"dep_delayed_rate":0.0651},{"origin":"MCO","city":"Orlando, FL","hour":7,"scheduled":6526,"dep_delayed_rate":0.0827},{"origin":"MCO","city":"Orlando, FL","hour":8,"scheduled":5156,"dep_delayed_rate":0.1157},{"origin":"MCO","city":"Orlando, FL","hour":9,"scheduled":5411,"dep_delayed_rate":0.1286},{"origin":"MCO","city":"Orlando, FL","hour":10,"scheduled":5187,"dep_delayed_rate":0.1567},{"origin":"MCO","city":"Orlando, FL","hour":11,"scheduled":5053,"dep_delayed_rate":0.2057},{"origin":"MCO","city":"Orlando, FL","hour":12,"scheduled":4321,"dep_delayed_rate":0.2249},{"origin":"MCO","city":"Orlando, FL","hour":13,"scheduled":4251,"dep_delayed_rate":0.2501},{"origin":"MCO","city":"Orlando, FL","hour":14,"scheduled":3809,"dep_delayed_rate":0.2609},{"origin":"MCO","city":"Orlando, FL","hour":15,"scheduled":5069,"dep_delayed_rate":0.2774},{"origin":"MCO","city":"Orlando, FL","hour":16,"scheduled":4858,"dep_delayed_rate":0.283},{"origin":"MCO","city":"Orlando, FL","hour":17,"scheduled":5531,"dep_delayed_rate":0.3219},{"origin":"MCO","city":"Orlando, FL","hour":18,"scheduled":4816,"dep_delayed_rate":0.3284},{"origin":"MCO","city":"Orlando, FL","hour":19,"scheduled":6053,"dep_delayed_rate":0.3794},{"origin":"MCO","city":"Orlando, FL","hour":20,"scheduled":4193,"dep_delayed_rate":0.4038},{"origin":"MCO","city":"Orlando, FL","hour":21,"scheduled":2649,"dep_delayed_rate":0.3896},{"origin":"MCO","city":"Orlando, FL","hour":22,"scheduled":967,"dep_delayed_rate":0.3925},{"origin":"MCO","city":"Orlando, FL","hour":23,"scheduled":406,"dep_delayed_rate":0.2637},{"origin":"ORD","city":"Chicago, IL","hour":5,"scheduled":1593,"dep_delayed_rate":0.0645},{"origin":"ORD","city":"Chicago, IL","hour":6,"scheduled":3957,"dep_delayed_rate":0.0783},{"origin":"ORD","city":"Chicago, IL","hour":7,"scheduled":11555,"dep_delayed_rate":0.0919},{"origin":"ORD","city":"Chicago, IL","hour":8,"scheduled":12231,"dep_delayed_rate":0.1431},{"origin":"ORD","city":"Chicago, IL","hour":9,"scheduled":10837,"dep_delayed_rate":0.1482},{"origin":"ORD","city":"Chicago, IL","hour":10,"scheduled":11450,"dep_delayed_rate":0.1722},{"origin":"ORD","city":"Chicago, IL","hour":11,"scheduled":7091,"dep_delayed_rate":0.199},{"origin":"ORD","city":"Chicago, IL","hour":12,"scheduled":7444,"dep_delayed_rate":0.197},{"origin":"ORD","city":"Chicago, IL","hour":13,"scheduled":9804,"dep_delayed_rate":0.2058},{"origin":"ORD","city":"Chicago, IL","hour":14,"scheduled":10789,"dep_delayed_rate":0.2218},{"origin":"ORD","city":"Chicago, IL","hour":15,"scheduled":7401,"dep_delayed_rate":0.2502},{"origin":"ORD","city":"Chicago, IL","hour":16,"scheduled":7893,"dep_delayed_rate":0.2677},{"origin":"ORD","city":"Chicago, IL","hour":17,"scheduled":6687,"dep_delayed_rate":0.2771},{"origin":"ORD","city":"Chicago, IL","hour":18,"scheduled":12861,"dep_delayed_rate":0.2661},{"origin":"ORD","city":"Chicago, IL","hour":19,"scheduled":9711,"dep_delayed_rate":0.3403},{"origin":"ORD","city":"Chicago, IL","hour":20,"scheduled":11435,"dep_delayed_rate":0.3228},{"origin":"ORD","city":"Chicago, IL","hour":21,"scheduled":5230,"dep_delayed_rate":0.3462},{"origin":"ORD","city":"Chicago, IL","hour":22,"scheduled":1992,"dep_delayed_rate":0.3853},{"origin":"PHX","city":"Phoenix, AZ","hour":5,"scheduled":2216,"dep_delayed_rate":0.0495},{"origin":"PHX","city":"Phoenix, AZ","hour":6,"scheduled":4337,"dep_delayed_rate":0.0585},{"origin":"PHX","city":"Phoenix, AZ","hour":7,"scheduled":5764,"dep_delayed_rate":0.0807},{"origin":"PHX","city":"Phoenix, AZ","hour":8,"scheduled":8186,"dep_delayed_rate":0.1093},{"origin":"PHX","city":"Phoenix, AZ","hour":9,"scheduled":6967,"dep_delayed_rate":0.1347},{"origin":"PHX","city":"Phoenix, AZ","hour":10,"scheduled":7178,"dep_delayed_rate":0.1655},{"origin":"PHX","city":"Phoenix, AZ","hour":11,"scheduled":6772,"dep_delayed_rate":0.1782},{"origin":"PHX","city":"Phoenix, AZ","hour":12,"scheduled":5353,"dep_delayed_rate":0.2017},{"origin":"PHX","city":"Phoenix, AZ","hour":13,"scheduled":5750,"dep_delayed_rate":0.1924},{"origin":"PHX","city":"Phoenix, AZ","hour":14,"scheduled":5229,"dep_delayed_rate":0.2422},{"origin":"PHX","city":"Phoenix, AZ","hour":15,"scheduled":6095,"dep_delayed_rate":0.2691},{"origin":"PHX","city":"Phoenix, AZ","hour":16,"scheduled":7001,"dep_delayed_rate":0.2584},{"origin":"PHX","city":"Phoenix, AZ","hour":17,"scheduled":5820,"dep_delayed_rate":0.2464},{"origin":"PHX","city":"Phoenix, AZ","hour":18,"scheduled":5362,"dep_delayed_rate":0.2923},{"origin":"PHX","city":"Phoenix, AZ","hour":19,"scheduled":5105,"dep_delayed_rate":0.2857},{"origin":"PHX","city":"Phoenix, AZ","hour":20,"scheduled":5979,"dep_delayed_rate":0.2551},{"origin":"PHX","city":"Phoenix, AZ","hour":21,"scheduled":3281,"dep_delayed_rate":0.2508},{"origin":"PHX","city":"Phoenix, AZ","hour":22,"scheduled":2496,"dep_delayed_rate":0.2302},{"origin":"PHX","city":"Phoenix, AZ","hour":23,"scheduled":2181,"dep_delayed_rate":0.1641},{"origin":"SEA","city":"Seattle, WA","hour":5,"scheduled":1195,"dep_delayed_rate":0.0463},{"origin":"SEA","city":"Seattle, WA","hour":6,"scheduled":2620,"dep_delayed_rate":0.086},{"origin":"SEA","city":"Seattle, WA","hour":7,"scheduled":6189,"dep_delayed_rate":0.1027},{"origin":"SEA","city":"Seattle, WA","hour":8,"scheduled":5974,"dep_delayed_rate":0.117},{"origin":"SEA","city":"Seattle, WA","hour":9,"scheduled":5618,"dep_delayed_rate":0.1518},{"origin":"SEA","city":"Seattle, WA","hour":10,"scheduled":4650,"dep_delayed_rate":0.2254},{"origin":"SEA","city":"Seattle, WA","hour":11,"scheduled":7019,"dep_delayed_rate":0.2665},{"origin":"SEA","city":"Seattle, WA","hour":12,"scheduled":3844,"dep_delayed_rate":0.2224},{"origin":"SEA","city":"Seattle, WA","hour":13,"scheduled":4276,"dep_delayed_rate":0.2122},{"origin":"SEA","city":"Seattle, WA","hour":14,"scheduled":2662,"dep_delayed_rate":0.2345},{"origin":"SEA","city":"Seattle, WA","hour":15,"scheduled":5755,"dep_delayed_rate":0.2331},{"origin":"SEA","city":"Seattle, WA","hour":16,"scheduled":2306,"dep_delayed_rate":0.248},{"origin":"SEA","city":"Seattle, WA","hour":17,"scheduled":5570,"dep_delayed_rate":0.2146},{"origin":"SEA","city":"Seattle, WA","hour":18,"scheduled":3324,"dep_delayed_rate":0.2292},{"origin":"SEA","city":"Seattle, WA","hour":19,"scheduled":4706,"dep_delayed_rate":0.2083},{"origin":"SEA","city":"Seattle, WA","hour":20,"scheduled":2639,"dep_delayed_rate":0.2756},{"origin":"SEA","city":"Seattle, WA","hour":21,"scheduled":4080,"dep_delayed_rate":0.2509},{"origin":"SEA","city":"Seattle, WA","hour":22,"scheduled":2620,"dep_delayed_rate":0.2673},{"origin":"SEA","city":"Seattle, WA","hour":23,"scheduled":2893,"dep_delayed_rate":0.2406}],"routes":[{"origin":"LGA","dest":"ORD","origin_city":"New York, NY","dest_city":"Chicago, IL","flights":5678,"on_time_rate":0.7567,"cancel_rate":0.0183},{"origin":"ORD","dest":"LGA","origin_city":"Chicago, IL","dest_city":"New York, NY","flights":5678,"on_time_rate":0.7509,"cancel_rate":0.0169},{"origin":"OGG","dest":"HNL","origin_city":"Kahului, HI","dest_city":"Honolulu, HI","flights":5459,"on_time_rate":0.8904,"cancel_rate":0.0117},{"origin":"HNL","dest":"OGG","origin_city":"Honolulu, HI","dest_city":"Kahului, HI","flights":5456,"on_time_rate":0.9095,"cancel_rate":0.0104},{"origin":"SFO","dest":"LAX","origin_city":"San Francisco, CA","dest_city":"Los Angeles, CA","flights":5365,"on_time_rate":0.823,"cancel_rate":0.0013},{"origin":"LAX","dest":"SFO","origin_city":"Los Angeles, CA","dest_city":"San Francisco, CA","flights":5363,"on_time_rate":0.7851,"cancel_rate":0.0021},{"origin":"LAX","dest":"JFK","origin_city":"Los Angeles, CA","dest_city":"New York, NY","flights":4924,"on_time_rate":0.819,"cancel_rate":0.0051},{"origin":"JFK","dest":"LAX","origin_city":"New York, NY","dest_city":"Los Angeles, CA","flights":4924,"on_time_rate":0.8158,"cancel_rate":0.0045},{"origin":"PHX","dest":"DEN","origin_city":"Phoenix, AZ","dest_city":"Denver, CO","flights":4815,"on_time_rate":0.7604,"cancel_rate":0.0073},{"origin":"DEN","dest":"PHX","origin_city":"Denver, CO","dest_city":"Phoenix, AZ","flights":4735,"on_time_rate":0.7442,"cancel_rate":0.0082},{"origin":"BOS","dest":"DCA","origin_city":"Boston, MA","dest_city":"Washington, DC","flights":4681,"on_time_rate":0.7345,"cancel_rate":0.0286},{"origin":"DCA","dest":"BOS","origin_city":"Washington, DC","dest_city":"Boston, MA","flights":4680,"on_time_rate":0.7587,"cancel_rate":0.0308}],"quality":[{"month":"2025-01","bronze":539747,"quarantined":0},{"month":"2025-02","bronze":504884,"quarantined":0},{"month":"2025-03","bronze":600872,"quarantined":1},{"month":"2025-04","bronze":583950,"quarantined":0},{"month":"2025-05","bronze":605648,"quarantined":0},{"month":"2025-06","bronze":611575,"quarantined":0}],"examples":[{"month":"2025-03","row_number":156437,"violations":["max:crs_elapsed_min"],"raw_record":{"FlightDate":"2025-03-30","Reporting_Airline":"OH","DOT_ID_Reporting_Airline":"20397","Tail_Number":"N565NN","Flight_Number_Reporting_Airline":"5292","OriginAirportID":"11057","Origin":"CLT","OriginCityName":"Charlotte, NC","OriginState":"NC","OriginStateName":"North Carolina","DestAirportID":"15412","Dest":"TYS","DestCityName":"Knoxville, TN","DestState":"TN","DestStateName":"Tennessee","CRSDepTime":"2249","DepTime":null,"CRSArrTime":"2359","ArrTime":null,"DepDelay":null,"ArrDelay":null,"ArrDelayMinutes":null,"DepDel15":null,"ArrDel15":null,"TaxiOut":null,"TaxiIn":null,"Cancelled":"1.00","CancellationCode":"B","Diverted":"0.00","CRSElapsedTime":"1510.00","ActualElapsedTime":null,"AirTime":null,"Distance":"177.00","CarrierDelay":null,"WeatherDelay":null,"NASDelay":null,"SecurityDelay":null,"LateAircraftDelay":null}}],"contract":{"name":"silver.flights","version":"1.0.0","checks":98,"budget":0.005},"built":"2026-11-11"};
+const NS = "http://www.w3.org/2000/svg";
+const pct = (x, d = 1) => x == null ? "–" : (x * 100).toFixed(d) + "%";
+const num = x => x == null ? "–" : Math.round(x).toLocaleString("en-US");
+const monthName = ym => new Date(ym + "-01T00:00:00").toLocaleString("en-US", { month: "short", year: "numeric" });
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function el(name, attrs = {}, parent) {
+  const n = document.createElementNS(NS, name);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function text(parent, x, y, s, attrs = {}) { const t = el("text", { x, y, ...attrs }, parent); t.textContent = s; return t; }
+const widthOf = (id, min = 300) => Math.max(min, Math.floor(document.getElementById(id).clientWidth || 640));
+function svg(target, w, h, label) {
+  const s = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": label });
+  document.getElementById(target).replaceChildren(s);
+  return s;
+}
+function table(target, head, rows, numeric = []) {
+  const th = head.map((h, i) => `<th class="${numeric.includes(i) ? "num" : ""}">${esc(h)}</th>`).join("");
+  const tr = rows.map(r => "<tr>" + r.map((c, i) => `<td class="${numeric.includes(i) ? "num" : ""}">${c}</td>`).join("") + "</tr>").join("");
+  document.getElementById(target).innerHTML = `<table><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>`;
+}
+
+// tooltip
+const tip = document.getElementById("tip");
+function hover(node, html) {
+  const show = e => {
+    tip.innerHTML = html; tip.classList.add("on");
+    const r = tip.getBoundingClientRect();
+    let x = (e.clientX ?? 0) + 14, y = (e.clientY ?? 0) + 14;
+    if (e.type === "focus") { const b = node.getBoundingClientRect(); x = b.right + 8; y = b.top; }
+    if (x + r.width > innerWidth - 8) x = innerWidth - r.width - 8;
+    if (y + r.height > innerHeight - 8) y = (e.clientY ?? y) - r.height - 14;
+    tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+  };
+  node.addEventListener("pointermove", show); node.addEventListener("focus", show);
+  node.addEventListener("pointerleave", () => tip.classList.remove("on"));
+  node.addEventListener("blur", () => tip.classList.remove("on"));
+}
+
+// a horizontal bar: 4px rounded data end, square at the baseline
+function hbar(parent, x, y, w, h) {
+  const r = Math.min(4, w / 2, h / 2);
+  const d = w <= 0 ? "" : `M${x},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} H${x} Z`;
+  return el("path", { d, class: "bar" }, parent);
+}
+function vbar(parent, x, y, w, h) {  // top-rounded, anchored at the bottom
+  const r = Math.min(4, w / 2, h);
+  const d = `M${x},${y + h} V${y + r} Q${x},${y} ${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h} Z`;
+  return el("path", { d, class: "bar" }, parent);
+}
+
+function header() {
+  const t = D.totals;
+  document.getElementById("lede").textContent =
+    `${num(t.flights)} scheduled flights by ${t.carriers} US carriers, ${monthName(t.first_month)} to ${monthName(t.last_month)}. ` +
+    `Loaded month by month into Apache Iceberg tables, validated against a data contract, and modeled into a star schema.`;
+  document.getElementById("built").textContent = `Built ${D.built} from gold.mart_* · contract ${D.contract.name} v${D.contract.version}`;
+  document.getElementById("k-flights").textContent = num(t.flights);
+  document.getElementById("k-flights-sub").textContent = `${D.months.length} months, ${t.carriers} carriers`;
+  document.getElementById("k-ontime").textContent = pct(t.on_time_rate);
+  document.getElementById("k-cancel").textContent = pct(t.cancel_rate);
+  const q = D.quality.reduce((a, r) => a + r.quarantined, 0);
+  document.getElementById("k-quar").textContent = num(q);
+  document.getElementById("k-quar-sub").textContent = `of ${num(D.quality.reduce((a, r) => a + r.bronze, 0))} rows, ${D.contract.checks} checks`;
+  document.getElementById("silver-stage").textContent = `Typed and checked against a ${D.contract.checks}-check data contract`;
+}
+
+function carriers() {
+  const rows = D.carriers, W = widthOf("c-carriers"), rowH = 26, top = 4, left = W < 480 ? 124 : 168, right = 52;
+  const H = top + rows.length * rowH + 22;
+  const s = svg("c-carriers", W, H, "Bar chart of on-time arrival rate by carrier");
+  const min = 0.6, max = 0.95, sx = v => left + (Math.max(v, min) - min) / (max - min) * (W - left - right);
+  const tick = W < 480 ? 0.1 : 0.05;
+  for (let v = 0.6; v <= 0.951; v += tick) {
+    el("line", { x1: sx(v), x2: sx(v), y1: top, y2: H - 20, class: "gridline" }, s);
+    text(s, sx(v), H - 4, pct(v, 0), { "text-anchor": "middle", class: "muted" });
+  }
+  rows.forEach((r, i) => {
+    const y = top + i * rowH, g = el("g", { class: "row", tabindex: 0 }, s);
+    text(g, left - 10, y + 16, r.carrier_name, { "text-anchor": "end" });
+    hbar(g, left, y + 5, sx(r.on_time_rate) - left, rowH - 10);
+    text(g, sx(r.on_time_rate) + 6, y + 16, pct(r.on_time_rate), { class: "strong" });
+    el("rect", { x: 0, y, width: W, height: rowH, class: "hit" }, g);
+    hover(g, `<b>${esc(r.carrier_name)}</b> (${r.carrier_code})<br>On time: ${pct(r.on_time_rate)}<br>Cancelled: ${pct(r.cancel_rate)}<br>${num(r.flights)} flights`);
+  });
+  table("t-carriers", ["Carrier", "Code", "Flights", "On time", "Cancelled"],
+    rows.map(r => [esc(r.carrier_name), r.carrier_code, num(r.flights), pct(r.on_time_rate), pct(r.cancel_rate)]), [2, 3, 4]);
+}
+
+function causes() {
+  const rows = D.causes, total = rows.reduce((a, r) => a + r.minutes, 0);
+  const W = widthOf("c-causes"), rowH = 44, left = 0, right = 46, H = rows.length * rowH;
+  const s = svg("c-causes", W, H, "Bar chart of arrival delay minutes by cause");
+  const max = Math.max(...rows.map(r => r.minutes)), sx = v => v / max * (W - left - right);
+  rows.forEach((r, i) => {
+    const y = i * rowH, g = el("g", { class: "row", tabindex: 0 }, s);
+    text(g, 0, y + 14, r.cause);
+    hbar(g, 0, y + 21, Math.max(2, sx(r.minutes)), 12);
+    text(g, sx(r.minutes) + 6, y + 31, pct(r.minutes / total, 0), { class: "strong" });
+    el("rect", { x: 0, y, width: W, height: rowH, class: "hit" }, g);
+    hover(g, `<b>${esc(r.cause)}</b><br>${num(r.minutes)} minutes<br>${pct(r.minutes / total)} of all delay minutes`);
+  });
+  table("t-causes", ["Cause", "Minutes", "Share"], rows.map(r => [esc(r.cause), num(r.minutes), pct(r.minutes / total)]), [1, 2]);
+}
+
+function months() {
+  const rows = D.months, W = widthOf("c-months"), H = 220, l = 44, r = 24, t = 20, b = 28;
+  const s = svg("c-months", W, H, "Line chart of on-time rate by month");
+  const vals = rows.map(d => d.on_time_rate);
+  const lo = Math.floor((Math.min(...vals) - 0.02) * 20) / 20, hi = Math.ceil((Math.max(...vals) + 0.02) * 20) / 20;
+  const sx = i => rows.length === 1 ? (l + W - r) / 2 : l + i * (W - l - r) / (rows.length - 1);
+  const sy = v => t + (hi - v) / (hi - lo) * (H - t - b);
+  for (let v = lo; v <= hi + 1e-9; v += 0.05) {
+    el("line", { x1: l, x2: W - r, y1: sy(v), y2: sy(v), class: "gridline" }, s);
+    text(s, l - 8, sy(v) + 4, pct(v, 0), { "text-anchor": "end", class: "muted" });
+  }
+  el("path", { d: rows.map((d, i) => `${i ? "L" : "M"}${sx(i)},${sy(d.on_time_rate)}`).join(" "), class: "line" }, s);
+  const best = vals.indexOf(Math.max(...vals)), worst = vals.indexOf(Math.min(...vals));
+  rows.forEach((d, i) => {
+    const every = Math.ceil(rows.length / Math.max(2, Math.floor((W - l) / 80)));
+    if ((i % every === 0 && rows.length - 1 - i >= every) || i === rows.length - 1)
+      text(s, sx(i), H - 6, monthName(d.year_month), { "text-anchor": i === 0 ? "start" : i === rows.length - 1 ? "end" : "middle", class: "muted" });
+    el("circle", { cx: sx(i), cy: sy(d.on_time_rate), r: 5, class: "dot" }, s);
+    if (i === best || i === worst) text(s, sx(i), sy(d.on_time_rate) - 12, pct(d.on_time_rate), { "text-anchor": "middle", class: "strong" });
+  });
+  // crosshair hover: one wide band per month
+  const cross = el("line", { y1: t, y2: H - b, class: "axis", visibility: "hidden" }, s);
+  rows.forEach((d, i) => {
+    const w = rows.length === 1 ? W - l - r : (W - l - r) / (rows.length - 1);
+    const band = el("rect", { x: sx(i) - w / 2, y: t, width: w, height: H - t - b, class: "hit", tabindex: 0 }, s);
+    hover(band, `<b>${monthName(d.year_month)}</b><br>On time: ${pct(d.on_time_rate)}<br>Cancelled: ${pct(d.cancel_rate)}<br>${num(d.flights)} flights`);
+    const on = () => { cross.setAttribute("x1", sx(i)); cross.setAttribute("x2", sx(i)); cross.setAttribute("visibility", "visible"); };
+    band.addEventListener("pointerenter", on); band.addEventListener("focus", on);
+    band.addEventListener("pointerleave", () => cross.setAttribute("visibility", "hidden"));
+  });
+  table("t-months", ["Month", "Flights", "On time", "Cancelled"],
+    rows.map(d => [monthName(d.year_month), num(d.flights), pct(d.on_time_rate), pct(d.cancel_rate)]), [1, 2, 3]);
+}
+
+function heat() {
+  const hours = [...new Set(D.heat.map(d => d.hour))].sort((a, b) => a - b);
+  const ap = D.airports, W = widthOf("c-heat", 640), l = 54, t = 4, cw = (W - l) / hours.length, ch = 26, H = t + ap.length * ch + 24;
+  const s = svg("c-heat", W, H, "Heatmap of the share of delayed departures by airport and hour");
+  const vals = D.heat.map(d => d.dep_delayed_rate).filter(v => v != null);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const steps = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7"];
+  const color = v => `var(${steps[Math.min(steps.length - 1, Math.floor((v - lo) / (hi - lo + 1e-9) * steps.length))]})`;
+  const byKey = new Map(D.heat.map(d => [d.origin + "|" + d.hour, d]));
+  ap.forEach((a, i) => {
+    const y = t + i * ch;
+    text(s, l - 8, y + ch / 2 + 4, a, { "text-anchor": "end", class: "strong" });
+    hours.forEach((h, j) => {
+      const d = byKey.get(a + "|" + h); if (!d || d.dep_delayed_rate == null) return;
+      const c = el("rect", { x: l + j * cw, y, width: cw, height: ch, rx: 3, fill: color(d.dep_delayed_rate), class: "cell", tabindex: 0 }, s);
+      hover(c, `<b>${esc(d.city)} (${a})</b><br>${String(h).padStart(2, "0")}:00–${String(h).padStart(2, "0")}:59 departures<br>${pct(d.dep_delayed_rate)} left 15+ min late<br>${num(d.scheduled)} scheduled`);
+    });
+  });
+  hours.forEach((h, j) => { if (h % 2 === 1) text(s, l + j * cw + cw / 2, H - 6, `${String(h).padStart(2, "0")}:00`, { "text-anchor": "middle", class: "muted" }); });
+  document.getElementById("ramp").innerHTML = steps.map(v => `<i style="background:var(${v})"></i>`).join("");
+  document.getElementById("ramp-range").textContent = `${pct(lo, 0)} – ${pct(hi, 0)}`;
+  table("t-heat", ["Airport", ...hours.map(h => String(h).padStart(2, "0"))],
+    ap.map(a => [a, ...hours.map(h => { const d = byKey.get(a + "|" + h); return d ? pct(d.dep_delayed_rate, 0) : "–"; })]),
+    hours.map((_, i) => i + 1));
+}
+
+function routes() {
+  table("t-routes", ["Route", "Cities", "Flights", "On time", "Cancelled"],
+    D.routes.map(r => [`<b>${r.origin} → ${r.dest}</b>`, `${esc(r.origin_city)} → ${esc(r.dest_city)}`, num(r.flights), pct(r.on_time_rate), pct(r.cancel_rate)]),
+    [2, 3, 4]);
+}
+
+function quality() {
+  table("t-quality", ["Month", "Bronze rows", "Quarantined", "Share"],
+    D.quality.map(r => [monthName(r.month), num(r.bronze), num(r.quarantined), r.quarantined ? pct(r.quarantined / r.bronze, 4) : "0%"]), [1, 2, 3]);
+  const box = document.getElementById("examples");
+  box.innerHTML = D.examples.map(e => {
+    const r = e.raw_record;
+    const pick = ["FlightDate", "Reporting_Airline", "Flight_Number_Reporting_Airline", "Origin", "Dest", "CRSDepTime", "CRSArrTime", "CRSElapsedTime", "Distance", "Cancelled"]
+      .filter(k => k in r).map(k => `${k}: ${r[k] ?? "null"}`).join("\n");
+    return `<div class="stage"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">${e.violations.map(v => `<span class="pill bad">${esc(v)}</span>`).join("")}<span class="pill">${monthName(e.month)} · row ${num(e.row_number)}</span></div><pre>${esc(pick)}</pre></div>`;
+  }).join("");
+}
+
+// theme switch: auto -> light -> dark
+const themes = ["auto", "light", "dark"], btn = document.getElementById("theme");
+let theme = "auto";
+try { theme = localStorage.getItem("ol-theme") || "auto"; } catch (e) {}
+function applyTheme() {
+  if (theme === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", theme);
+  btn.textContent = "Theme: " + theme;
+}
+btn.addEventListener("click", () => {
+  theme = themes[(themes.indexOf(theme) + 1) % 3];
+  try { localStorage.setItem("ol-theme", theme); } catch (e) {}
+  applyTheme();
+});
+applyTheme();
+
+header(); routes(); quality();
+function charts() { carriers(); causes(); months(); heat(); }
+charts();
+let lastW = innerWidth, pending;
+addEventListener("resize", () => {
+  if (innerWidth === lastW) return;
+  lastW = innerWidth; clearTimeout(pending); pending = setTimeout(charts, 120);
+});
+</script>
+</body>
+</html>
