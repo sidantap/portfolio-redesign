@@ -17,7 +17,7 @@ const icon = { github: '<>', linkedin: 'in', comply: 'c.', email: '@', resume: '
       <ul class="rows links">
         {links.map((l) => (
           <li>
-            <a class="row" href={href(l.href)} target={/^https?:/.test(l.href) ? '_blank' : undefined} rel="noopener">
+            <a class="row" href={href(l.href)} target={/^https?:|\.pdf$/.test(l.href) ? '_blank' : undefined} rel="noopener">
               <span class="ic" aria-hidden="true">{icon[l.k]}</span>
               <span class="meta" style="text-transform:uppercase;letter-spacing:.16em">{l.label}</span>
               <span class="t">{l.value}</span>

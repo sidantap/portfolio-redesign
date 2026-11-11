@@ -15,6 +15,7 @@ export const person = {
 export const links = [
   { k: 'github', label: 'GitHub', value: 'sidantap', href: 'https://github.com/sidantap' },
   { k: 'linkedin', label: 'LinkedIn', value: 'Sidanta Parajuli', href: 'https://www.linkedin.com/in/sid2003' },
+  { k: 'resume', label: 'Résumé', value: 'PDF, 2 pages', href: 'Sidanta_Parajuli_Resume.pdf' },
   { k: 'comply', label: 'comply.', value: 'complydot.org', href: 'https://www.complydot.org' },
   { k: 'email', label: 'Email', value: 'sidantaparajuli@gmail.com', href: 'mailto:sidantaparajuli@gmail.com' },
 ];
@@ -23,7 +24,7 @@ export const links = [
 export const experience = [
   {
     when: '02/2026–Current', role: 'Data Analytics Engineer',
-    logo: { text: 'NKWD', label: 'Northern Kentucky Water District' }, org: 'Northern Kentucky Water District · Erlanger, KY',
+    logo: { src: 'logos/nkwd.png', ar: 4.64, label: 'Northern Kentucky Water District' }, org: 'Northern Kentucky Water District · Erlanger, KY',
     text: 'Medallion (bronze, silver, gold) pipelines on Azure Databricks with PySpark and Delta Lake, loading raw data incrementally and modeling gold facts and dimensions with SCD Type 1 and 2. Metadata-driven, idempotent ingestion from operational databases and SaaS APIs, orchestrated with Azure Data Factory, ADLS Gen2 and Key Vault and shipped through Azure DevOps CI/CD with automated tests and code-quality checks. Built 10–20 Power BI reports for seven departments and migrated 40–50 Crystal Reports, saving 20–40 staff hours a week.',
     links: [{ t: 'Lakehouse', post: 'projects/databricks-lakehouse/' }],
   },
